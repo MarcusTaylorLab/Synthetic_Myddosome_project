@@ -20,7 +20,7 @@ tar xjf rosetta.source.release-340.tar.bz2
 conda create --name rosetta python=3.10
 ```
 - activate environment with conda ``` activate rosetta ``` and deactivate with ```conda deactivate```
-install the compiler SCons in environment using
+- install the compiler SCons in environment using
 ```
 pip install SCons
 ```

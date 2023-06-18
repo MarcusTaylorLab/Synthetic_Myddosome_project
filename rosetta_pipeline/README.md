@@ -20,7 +20,7 @@ tar xjf rosetta.source.release-340.tar.bz2
 conda create --name rosetta python=3.10
 ```
 - activate environment with conda ``` activate rosetta ``` and deactivate with ```conda deactivate```
-install the compiler SCons in environment using
+- install the compiler SCons in environment using
 ```
 pip install SCons
 ```
@@ -31,3 +31,42 @@ pip install SCons
 - If you want to install it on your local machine (works only on UNIX operating system) use ```./scons.py -j<number_of_processors_to_use> mode=release bin```. Replace with a number one processor fewer than your computer has. Expect compilation to take a while (hours on one processor).
 
 ## Setting up ddG pipeline
+
+- Clone this directory onto raven
+- Navigate to the folder rosetta_pipeline ```cd rosetta_pipeline```
+- prepare the environment by creating necessary folder structure:
+```
+mkdir output_files slurm_logs from_af2
+```
+- open R by typing ```R```
+- install the package bio3d with the command ```install.packages("bio3d")```
+
+## Submitting relaxation of a list of structures followed by interface scoring
+
+- create a list containing in each line the relative paths of the structures you want to relax and score. It is important to provide the relative paths starting at your home directory (rosetta_pipeline), as ROSETTA3 has had problems with absolute file paths. A template for this can be found in ```flags/pdb_list```
+```
+from_rcsb/6E9R
+from_rcsb/6E9T
+from_rcsb/6E9V
+from_rcsb/6E9X
+from_rcsb/6E9Y
+from_rcsb/6E9Z
+```
+- mdoify ```user_parameters``` so it contains the filepath to your ROSETTA3 installation (ROSETTA3) and to your rosetta_pipeline folder (MYROSETTA)
+- provide the file path for the list of structures to be analysed to the INPUT variable
+- submit the submit_relax_ddg.sh script
+```
+./submit_relax_ddg.sh
+```
+
+## Downloading pdb structures directly from rcsb
+
+from: https://www.rcsb.org/docs/programmatic-access/batch-downloads-with-shell-script
+
+- navigate to the folder from_rcsb ```cd from_rcsb```
+- the file ```list_file.txt``` is a plain text file that contains a comma separated list of PDB ids. You can modify this list and insert the pdb ids you want to download
+- Download the structures in ```list_file.txt``` in the .pdb format:
+```
+./batch_download.sh -f list_file.txt -p
+```
+- Obtain full help on the batch download shell script at the command line with: ```./batch_download.sh -h```

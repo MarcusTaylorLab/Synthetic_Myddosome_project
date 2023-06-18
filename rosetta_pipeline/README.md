@@ -38,6 +38,8 @@ pip install SCons
 ```
 mkdir output_files slurm_logs from_af2
 ```
+- open R by typing ```R```
+- install the package bio3d with the command ```install.packages("bio3d")```
 
 ## Submitting relaxation of a list of structures followed by interface scoring
 

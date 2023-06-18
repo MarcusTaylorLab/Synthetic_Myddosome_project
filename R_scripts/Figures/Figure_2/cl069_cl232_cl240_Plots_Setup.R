@@ -1,9 +1,20 @@
 library(pacman)
 
-pacman::p_load(ggplot2, data.table, dplyr, ggfx, viridis, RColorBrewer, ggpubr, lemon, ggbreak, tidyfast, ggbeeswarm)
+pacman::p_load(ggplot2, data.table, dplyr, ggfx, viridis, RColorBrewer, ggpubr, lemon, ggbreak, tidyfast, ggbeeswarm, R.utils)
 filter <- dplyr::filter
 
-#Set paht of analyzed Images
+#running script on mac?
+mac = TRUE
+
+#the file structure differs between mac and windows. This function converts the windows structure to the mac structure
+data_tay_conversion <- function(fpath){
+  loc <- strsplit(fpath, split = "//data-tay/TAYLOR-LAB/")[[1]][2]
+  fpath_new <- paste("/Volumes/TAYLOR-LAB/", loc, sep = "")
+  
+  return(fpath_new)
+}
+
+#Set path of analyzed Images
 TablePaths <- c(
   "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88 TRAF6/20230405 1.5nM_cl069_TRAF6_MyD88 001/Essential.csv.gz",
   #"//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88 TRAF6/20230405 1.5nM_cl069_TRAF6_MyD88 006/Essential.csv.gz",
@@ -19,6 +30,10 @@ TablePaths <- c(
   "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-TIR-TRAF6-BD TRAF6/20230405 1.5nM_cl240_TRAF6_MyD88-TIR-TRAF6-BD-GFP 001/Essential.csv.gz",
   "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-TIR-TRAF6-BD TRAF6/20230413 2.5nM_cl240_TRAF6_MyD88-TIR-TRAF6-BD-GFP 001/Essential.csv.gz"
 )
+
+if(mac == TRUE){
+  TablePaths <- lapply(TablePaths, data_tay_conversion)
+}
   
 Table <- lapply(TablePaths, 
                   fread)

@@ -1,9 +1,17 @@
-library(pacman)
-p_load(bio3d)
+#!/usr/local/bin/Rscript
+library(bio3d)
 
-INPUT_PATH <- paste()
+#intercept variables from shell script
+shell_var <- commandArgs(trailingOnly = TRUE)
+vars <- strsplit(shell_var, "=", fixed = TRUE)
 
-pdb <- read.pdb("/Users/u_lichtenstein/hpc_data/from_rcsb/6I3N.pdb")
+HOME_DIRECTORY <- vars[[1]][2]
+STRUCTURE_PATH <- vars[[2]][2]
+
+# Define input directory for the structure
+INPUT <- paste(HOME_DIRECTORY, STRUCTURE_PATH, sep = "/")
+
+pdb <- read.pdb(INPUT)
 
 #Determine interacing chains
 chain_A <- atom.select(pdb, chain = "A") # Select chain A
@@ -15,4 +23,4 @@ interacting_chains <- binding.site(a = pdb, b.inds = chain_A, a.inds = not_chain
 
 chains <- unique(as.vector(interacting_chains$chain))
 
-print(chains)
+cat(chains, sep = " ")

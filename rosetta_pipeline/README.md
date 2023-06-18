@@ -31,3 +31,15 @@ pip install SCons
 - If you want to install it on your local machine (works only on UNIX operating system) use ```./scons.py -j<number_of_processors_to_use> mode=release bin```. Replace with a number one processor fewer than your computer has. Expect compilation to take a while (hours on one processor).
 
 ## Setting up ddG pipeline
+
+- Clone this directory onto raven
+- Navigate to the folder rosetta_pipeline ```cd rosetta_pipeline```
+- prepare the environment by creating necessary folder structure:
+```
+mkdir output_files slurm_logs from_af2
+```
+
+
+
+
+

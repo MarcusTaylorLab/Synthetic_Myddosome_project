@@ -33,6 +33,9 @@ pip install SCons
 ## Setting up ddG pipeline
 
 - Clone this directory onto raven
+```
+git clone https://github.com/m4uriz/Synthetic_Myddosome_project
+```
 - Navigate to the folder rosetta_pipeline ```cd rosetta_pipeline```
 - prepare the environment by creating necessary folder structure:
 ```
@@ -43,14 +46,10 @@ mkdir output_files slurm_logs from_af2
 
 ## Submitting relaxation of a list of structures followed by interface scoring
 
-- create a list containing in each line the relative paths of the structures you want to relax and score. It is important to provide the relative paths starting at your home directory (rosetta_pipeline), as ROSETTA3 has had problems with absolute file paths. A template for this can be found in ```flags/pdb_list```
+- create a list containing in each line the relative paths of the structures you want to relax and score. It is important to provide the relative paths starting at your home directory (rosetta_pipeline), as ROSETTA3 has had problems with absolute file paths. A template for this can be found in ```flags/test.txt```
 ```
-from_rcsb/6E9R
-from_rcsb/6E9T
-from_rcsb/6E9V
-from_rcsb/6E9X
-from_rcsb/6E9Y
-from_rcsb/6E9Z
+from_rcsb/1qys.pdb
+from_rcsb/3R2X.pdb
 ```
 - mdoify ```user_parameters``` so it contains the filepath to your ROSETTA3 installation (ROSETTA3) and to your rosetta_pipeline folder (MYROSETTA)
 - provide the file path for the list of structures to be analysed to the INPUT variable

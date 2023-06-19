@@ -16,17 +16,19 @@
 #SBATCH --time=23:00:00
 
 # Define the directory variables
-source user_parameters.sh
+source ../user_parameters.sh
 
 # Define the variable S which is equal to the nth line in pdb_list - pdb_list contains the structures and their paths to be analysed.
 S=$( head -${SLURM_ARRAY_TASK_ID} $INPUT_LIST | tail -1 )
 
-echo ${SLURM_ARRAY_TASK_ID}
-echo $S
+echo "Array-ID is:" ${SLURM_ARRAY_TASK_ID}
+echo "path to structure is:" $S
 
 # extract structure name from S
 filename=$S
 title=$(basename "$filename" .pdb)
+
+echo "name of structure is:" $S
 
 # create a folder for each structure to be analysed
 mkdir $MYROSETTA/output_files/$title
@@ -40,8 +42,12 @@ cd $MYROSETTA
 output=$(R --vanilla --slave -f find_interface.R --args HOME_DIRECTORY=$MYROSETTA STRUCTURE_PATH=$S)
 chains=$(echo $output | cut -d '"' -f 2)
 
+echo "chains interfacing with A are:" $chains
+
 # compute 5 relaxed structures for further ddG calculations
-$ROSETTA3/bin/relax.mpi.linuxgccrelease -in:file:s $S -relax:constrain_relax_to_start_coords -out:suffix _startconstraints -out:path:pdb $DIR -nstruct 5
+$ROSETTA3/bin/relax.mpi.linuxgccrelease -in:file:s $S -relax:constrain_relax_to_start_coords -out:suffix _startconstraints -out:path:all $DIR -nstruct 5
+
+echo "finished relaxation"
 
 cd $DIR
 

@@ -1,0 +1,2 @@
+from_rcsb/1qys.pdb
+from_rcsb/3R2X.pdb

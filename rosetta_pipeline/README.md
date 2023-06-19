@@ -51,7 +51,7 @@ mkdir output_files slurm_logs from_af2
 from_rcsb/1qys.pdb
 from_rcsb/3R2X.pdb
 ```
-- mdoify ```user_parameters``` so it contains the filepath to your ROSETTA3 installation (ROSETTA3) and to your rosetta_pipeline folder (MYROSETTA)
+- mdodify ```user_parameters``` so it contains the filepath to your ROSETTA3 installation (ROSETTA3) and to your rosetta_pipeline folder (MYROSETTA)
 - provide the file path for the list of structures to be analysed to the INPUT variable
 - submit the submit_relax_ddg.sh script
 ```

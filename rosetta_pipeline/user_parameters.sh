@@ -8,7 +8,7 @@ MYROSETTA='/u/mlicht/rosetta_2023.6/rosetta.source.release-340/Synthetic_Myddoso
 INPUT_LIST=$MYROSETTA/flags/test.txt
 
 # Compute number of structures in list
-NUM=$(echo $INPUT_LIST | wc -l)
+NUM=$(wc -l < $INPUT_LIST)
 
 NUM=$((NUM+1))
 

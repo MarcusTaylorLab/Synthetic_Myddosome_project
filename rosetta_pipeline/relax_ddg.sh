@@ -4,12 +4,16 @@
 #SBATCH -J RELAX_ARRAY
 #
 # Standard output and error:
-#SBATCH -o ./job.out.%j
+#SBATCH -o job_%A_%a.out        # Standard output, %A = job ID, %a = job array index
 #
 # Number of nodes and MPI tasks per node:
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=36
-#SBATCH --mem=120000
+#SBATCH --ntasks=1
+#SBATCH --constraint="gpu"
+#
+# --- default case: use a single GPU on a shared node ---
+#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=5000
 #
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=lichtenstein@mpiib-berlin.mpg.de

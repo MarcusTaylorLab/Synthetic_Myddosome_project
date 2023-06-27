@@ -13,7 +13,7 @@ INPUT <- paste(HOME_DIRECTORY, STRUCTURE_PATH, sep = "/")
 
 pdb <- read.pdb(INPUT)
 
-#Determine interacing chains
+#Determine interacting chains
 chain_A <- atom.select(pdb, chain = "A") # Select chain A
 
 not_chain_A <- atom.select(pdb, chain = "A", inverse = TRUE) #select everything else

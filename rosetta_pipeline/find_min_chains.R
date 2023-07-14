@@ -1,5 +1,6 @@
 #!/usr/local/bin/Rscript
 library(bio3d)
+library(dplyr)
 
 #intercept variables from shell script
 shell_var <- commandArgs(trailingOnly = TRUE)

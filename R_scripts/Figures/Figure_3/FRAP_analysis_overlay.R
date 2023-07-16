@@ -1,0 +1,182 @@
+library(pacman)
+
+pacman::p_load(ggplot2, ggdark, data.table, dplyr, ggfx, viridis, ggridges, RColorBrewer, ggpubr, lemon)
+filter <- dplyr::filter
+
+#load tables
+TablePaths <- c(
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl232/20230124_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl232/20230202_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl232/20230425_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl236/20230124_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl236/20230202_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl236/20230425_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl240/20230124_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl240/20230202_Intensity.csv",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/FRAP_data_analysis/cl240/20230425_Intensity.csv"
+)
+
+Table <- lapply(TablePaths, 
+                fread)
+
+Table <- rbindlist(Table,
+                   fill = TRUE)
+
+Tracks <-
+  Table %>% 
+  group_by(
+    IMAGE
+  ) %>% 
+  mutate(
+    MEAN_INT_BG_REMOVED = MEAN_INTENSITY-BACKGROUND_INTENSITY, 
+    #I measured an ROI in the background and substract this value from every measured intensity for normalization
+    RELATIVE_INTENSITY = (MEAN_INT_BG_REMOVED-MEAN_INT_BG_REMOVED[5])/(MEAN_INT_BG_REMOVED[1]-MEAN_INT_BG_REMOVED[5]),
+    #I get the relative Intensity by subtracting the intensity value of row 5 
+    #([5]; time of bleaching) from the respective intensity and dividing both by 
+    #the difference of "prebleach" and "bleach". This results in prebleach = 1 and 
+    #"bleach" = 0. 
+    RATIO_REF = ((REF_INTENSITY[1]-BACKGROUND_INTENSITY[1])/(REF_INTENSITY-BACKGROUND_INTENSITY)),
+    #I measured the intensity of an additional spot within the same cell that 
+    #wasn't FRAPed to get the overall bleaching rate.
+    RELATIVE_INTENSITY_ADJUSTED = RATIO_REF*RELATIVE_INTENSITY,
+    #By multiplying the ratio of the reference intensity with the relative 
+    #intensity you can correct for the overall bleaching.
+    # TIME_ADJUSTED = (FRAMES-FRAMES[2])*4
+    #whatever your frame rate was
+  )
+
+Means <- 
+  Tracks %>%
+  mutate(
+    DATE = substring(IMAGE, 1,8),
+    TIME_ADJUSTED = (FRAMES-FRAMES[2])*4,
+    TIME_SET_0 = TIME_ADJUSTED - TIME_ADJUSTED[5]
+  ) %>% 
+  filter(
+    TIME_SET_0 <= 150
+  ) %>% 
+  group_by(
+    DATE,
+    COHORT,
+    TIME_SET_0
+  ) %>%
+  summarize(
+    MEAN = median(RELATIVE_INTENSITY_ADJUSTED),
+    VARIANCE = var(RELATIVE_INTENSITY_ADJUSTED)
+  )
+# group_by(
+#   DATE
+# ) %>% 
+# distinct(
+#   MEAN, .keep_all = TRUE
+#   ) %>% 
+# group_by(
+#   COHORT,
+#   TIME
+# ) %>% 
+# summarize(
+#   MEANMEAN = mean(MEAN)
+# )
+
+MeanofMeans <- 
+  Means %>% 
+  group_by(
+    COHORT,
+    TIME_SET_0
+  ) %>% 
+  summarize(
+    MEANOFM = mean(MEAN),
+    SDDEV = sqrt(mean(VARIANCE))
+  )
+
+color_pal <- 
+  c(
+    "cl232" = "#117733", 
+    "cl240" = "#332288",
+    "cl236" = "#882255"
+  )
+
+#Plot the data
+
+ggplot(
+  data = MeanofMeans,
+  aes(
+    y = MEANOFM,
+    x = TIME_SET_0
+    )
+)+
+  geom_rect(
+    aes(
+      xmin = -Inf, 
+      xmax = 0, 
+      ymin = -Inf, 
+      ymax = Inf
+    ),
+    alpha = 0.1,
+    fill = "gray88"
+  )+
+  geom_vline(
+    color = "gray48",
+    linewidth = 0.9,
+    linetype = 3,
+    aes(
+      xintercept = 0
+    )
+  )+
+  geom_path(
+    aes(
+      color = COHORT
+    ),
+    linewidth = 0.75
+  )+
+  geom_ribbon(
+    data = MeanofMeans,
+    aes(
+      x = TIME_SET_0,
+      y = MEANOFM,
+      ymin = MEANOFM - SDDEV,
+      ymax = MEANOFM + SDDEV,
+      fill = COHORT
+    ),
+    alpha = 0.4
+  )+
+  labs(
+    x = "Time (s)",
+    y = "Relative intensity (a. u.) ± SD"
+  )+
+  annotate(
+    geom = "text",
+    x = 20,
+    y = 1,
+    label = substitute(paste(bold("Bleach"))),
+    color = "gray48"
+  )+
+  scale_y_continuous(
+    breaks = c(0, 0.5, 1)
+  )+
+  scale_x_continuous(
+    limits = c(NA,120)
+  )+
+  fill_palette(
+    palette = color_pal
+  )+
+  color_palette(
+    palette = color_pal
+  )+ 
+  theme_classic(
+    base_size = 10
+  )+
+  theme(
+    legend.position = "0"
+  )
+
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+
+ggsave(
+  "cl232_cl236_cl240_FRAP-recovery-overlay_PATH.pdf",
+  scale = 1,
+  units = "mm",
+  height = 50,
+  width = 65
+)
+

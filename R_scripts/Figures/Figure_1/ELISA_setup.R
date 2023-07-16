@@ -1,14 +1,15 @@
 library(pacman)
 pacman::p_load(data.table, tidyr, dplyr, ggplot2, interleave, ggpubr, stringr)
+filter <- dplyr::filter
 
 #provide location of template script
-TEMPLATE_SCRIPT <- "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
+TEMPLATE_SCRIPT <- "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
 
 #Specify which data to analyse
 Input_Directory_List <- 
-  c("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa")
+  c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa")
 
 # Run the setup -----------------------------------------------------------
 All_days_data <- data.frame()
@@ -17,7 +18,7 @@ for (Input_Directory in Input_Directory_List){
 
   print(Input_Directory)
   source(TEMPLATE_SCRIPT, local = T)
-  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][8], "_"))[[1]][1]
+  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][7], "_"))[[1]][1]
   All_days_data <- rbind(All_days_data, All_plates_data)
 
   rm(
@@ -64,13 +65,14 @@ Plot_Fx <- function(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_te
         x = Cohort,
         y = IL2_concentration_Dilution_Factor_mean
       ),
-      size = 2,
+      size = 1,
       position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.4)
     )+
     stat_compare_means(
       data = chimeric_MyD88_test,
       method = "wilcox.test",
-      label = "p.signif"
+      label = "p.signif",
+      hide.ns = TRUE
     )+
     scale_y_continuous(
       breaks = scales::breaks_width(1000)
@@ -81,15 +83,15 @@ Plot_Fx <- function(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_te
     labs(
       y = "IL-2 (pg/mL)"
     ) +
-    theme_classic(base_size = 15) +
+    theme_classic(base_size = 10) +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 16, colour = "black"),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 10, colour = "black"),
       axis.title.x = element_blank(),
-      axis.text.y = element_text(size = 15),
-      axis.title.y = element_text(size = 18),
+      axis.text.y = element_text(size = 9),
+      axis.title.y = element_text(size = 11),
       legend.position = "top",
       legend.title = element_blank(),
-      legend.text = element_text(size = 16, color = "black")
+      legend.text = element_text(size = 10, color = "black")
     )
 }
 

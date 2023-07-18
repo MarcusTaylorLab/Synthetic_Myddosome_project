@@ -15,7 +15,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 2 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -192,7 +192,7 @@ color_violin_LT<-c(
          cex = 2,
          priority = "density",
          #color = "black",
-         alpha = 1,
+         alpha = 0.7,
          size = 2
        )+
      geom_point(
@@ -250,12 +250,13 @@ color_violin_LT<-c(
      color_palette(
          palette = color_violin_LT
        )+ 
-     theme_classic(base_size = 10)+
+     theme_classic(base_size = 9)+
      theme(
          legend.position = "0",
          #strip.text = element_blank(),
-         axis.text = element_text(color = "black"),
-         #axis.text.x = element_blank(),
+         axis.text = element_text(color = "black",
+                                    size = 7),
+         axis.text.x = element_blank(),
          axis.title.x = element_blank(),
          strip.background = element_blank()
        )
@@ -267,6 +268,6 @@ color_violin_LT<-c(
      scale = 1,
      units = "mm",
      height = 35,
-     width = 100
+     width = 70
    )
  

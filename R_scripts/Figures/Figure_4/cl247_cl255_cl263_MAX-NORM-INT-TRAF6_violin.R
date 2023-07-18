@@ -34,9 +34,9 @@ Replicates<-
     COHORT
   ) %>% 
   summarize(
-    LIFETIME = median(LIFETIME),
-    MAX_NORMALIZED_INTENSITY = median(MAX_NORMALIZED_INTENSITY),
-    MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1 = median(MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1)
+    LIFETIME = mean(LIFETIME),
+    MAX_NORMALIZED_INTENSITY = mean(MAX_NORMALIZED_INTENSITY),
+    MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1 = mean(MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1)
   ) %>% 
   as.data.table()
 
@@ -51,10 +51,9 @@ ggplot(
 )+
   geom_violin(
     alpha = 0.7,
-    scale = "width"
   )+
   geom_boxplot(
-    width = .1,
+    width = .2,
     outlier.shape = NA,
     fill = NA
   )+
@@ -65,14 +64,17 @@ ggplot(
     data = Replicates,
     position = position_jitter(height=0.2, width=0)
   )+
+  scale_x_log10(
+    breaks = scales::breaks_log(n = 10, base = 10)
+  )+
   labs(
     y = "Cell Lines",
-    x = "Max Normalized Intensity of TRAF6"
+    x = "Max size of TRAF6"
   )+
   coord_cartesian(
-    xlim = c(1,25)
+    xlim = c(1.5, NA)
   )+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
     legend.title = element_blank(),
@@ -80,12 +82,12 @@ ggplot(
     axis.text.x = element_text(color = "black")
   )
 
-setwd("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
 
 ggsave(
   "cl247_cl255_cl263_MAX-NORM-INT-TRAF6_violin.pdf",
-  scale = 3,
+  scale = 1,
   units = "mm",
-  height = 40,
-  width = 60
+  height = 35,
+  width = 70
 )

@@ -9,8 +9,8 @@ Recruitment_List <-
   ) %>% 
   mutate(
     RECRUITMENT = fcase(
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 2, "1",
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 <2, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5, "1",
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1.5, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
     ),
     NORMALIZED_INTENSITY = round(NORMALIZED_INTENSITY) #so we round to even integers
   ) %>% 

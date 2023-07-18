@@ -15,7 +15,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 2 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -161,6 +161,11 @@ Mean_Total <-
   ) %>% 
   as.data.table()
 
+# Just plot the long lived recruitments
+Mean_Cell <- Mean_Cell %>% filter(CATEGORY_DWELL_TIME == ">12 s")
+Mean_Replicates <- Mean_Replicates %>% filter(CATEGORY_DWELL_TIME == ">12 s")
+Mean_Total <- Mean_Total  %>% filter(CATEGORY_DWELL_TIME == ">12 s")
+
  # Beeswarm plot --------------------------------------------------------
  ggplot(
      data = Mean_Cell,
@@ -178,7 +183,7 @@ Mean_Total <-
          dodge.width = 1,
          cex = 2,
          priority = "density",
-         #color = "black",
+         size = 1.5,
          alpha = 1
        )+
      geom_point(
@@ -189,7 +194,7 @@ Mean_Total <-
              group = COHORT,
              shape = Mean_Replicates$SHAPE
            ),
-         size = 1.5,
+         size = 2,
          stroke = 1.5,
          color = "black",
          fill = NA,
@@ -210,28 +215,23 @@ Mean_Total <-
        color = "black",
        size = 1
      )+
-     stat_compare_means(
+     geom_pwc(
          data = Mean_Replicates,
          method = "t.test",
          label = "p.signif",
-         comparisons = list(
-             c("MyD88-GFP-synTRAF6-BD-1x TRAF6", "MyD88-GFP-synTRAF6-BD-3x TRAF6"),
-             c("MyD88-GFP-synTRAF6-BD-1x TRAF6", "MyD88-GFP-synTRAF6-BD-5x TRAF6"),
-             c("MyD88-GFP-synTRAF6-BD-3x TRAF6", "MyD88-GFP-synTRAF6-BD-5x TRAF6")
-           ),
-         tip.length = 0
+         tip.length = 0,
+         hide.ns = TRUE,
+         label.size = 4,
+         bracket.nudge.y = 0.08,
+         vjust = 0.5
        )+
      scale_shape_identity(
        )+
-     facet_wrap(
-         ~CATEGORY_DWELL_TIME
-       )+
      labs(
-         y = "% of recruitments",
-         title = "Lifetime of TRAF6 (s)"
+         y = "% long lived \n recruitments per cell",
        )+
      scale_y_continuous(
-         limits = c(0, 135)
+         limits = c(0, NA)
        )+
      fill_palette(
          palette = color_violin
@@ -239,7 +239,7 @@ Mean_Total <-
      color_palette(
          palette = color_violin
        )+ 
-     theme_classic(base_size = 22)+
+     theme_classic(base_size = 9)+
      theme(
          legend.position = "0",
          #strip.text = element_blank(),
@@ -249,13 +249,13 @@ Mean_Total <-
          strip.background = element_blank()
        )
 
- setwd("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+ setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
 
  ggsave(
      "cl247_cl255_cl263_TRAF6-LT_beeswarm.pdf",
-     scale = 3,
+     scale = 1,
      units = "mm",
-     height = 40,
-     width = 60
+     height = 35,
+     width = 70
    )
  

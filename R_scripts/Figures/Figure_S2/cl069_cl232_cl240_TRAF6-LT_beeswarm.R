@@ -16,7 +16,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 2 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 

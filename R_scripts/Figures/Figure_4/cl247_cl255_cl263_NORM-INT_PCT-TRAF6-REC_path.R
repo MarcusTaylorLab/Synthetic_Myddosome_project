@@ -9,8 +9,8 @@ Recruitment_List <-
   ) %>% 
   mutate(
     RECRUITMENT = fcase(
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 2, "1",
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 <2, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5, "1",
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1.5, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
     ),
     NORMALIZED_INTENSITY = 2*round(NORMALIZED_INTENSITY/2) #so we round to even integers
   ) %>% 
@@ -43,17 +43,17 @@ ggplot(
       group = COHORT,
       color = COHORT
     ),
-    alpha = 0.5,
-    linewidth = 1.5
-  )+
-  geom_path(
-    aes(
-      x = NORMALIZED_INTENSITY,
-      y = SMOOTH_NORMALIZED_RECRUITMENT*100,
-      group = COHORT,
-      color = COHORT
-    ),
+    # alpha = 0.5,
     linewidth = 1
+  # )+
+  # geom_path(
+  #   aes(
+  #     x = NORMALIZED_INTENSITY,
+  #     y = SMOOTH_NORMALIZED_RECRUITMENT*100,
+  #     group = COHORT,
+  #     color = COHORT
+  #   ),
+  #   linewidth = 1
   )+
   color_palette(
     palette = color_violin
@@ -65,25 +65,25 @@ ggplot(
   scale_y_continuous(
     trans = "log1p",
     limits = c(0, 100),
-    breaks = c(0,5,10,25,50,75,100)
-  )+ 
-  labs(
-    x = "Normalized Intensity of chimeric MyD88",
-    y = "% colocalization with TRAF6"
+    breaks = c(0,5,10,25,50,100)
   )+
-  theme_classic(base_size = 22)+
+  labs(
+    x = "Size of chimeric oligomer",
+    y = "% colocalization \n with TRAF6"
+  )+
+  theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
     legend.title = element_blank(),
     axis.text = element_text(color = "black")
   )
 
-setwd("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
 
 ggsave(
   "cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path.pdf",
-  scale = 3,
+  scale = 1,
   units = "mm",
-  height = 40,
-  width = 60
+  height = 35,
+  width = 70
 )

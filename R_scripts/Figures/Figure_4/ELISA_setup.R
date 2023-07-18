@@ -1,16 +1,17 @@
 library(pacman)
 pacman::p_load(data.table, tidyr, dplyr, ggplot2, interleave, ggpubr, stringr, ggbreak)
+filter <- dplyr::filter
 
 #provide location of template script
-TEMPLATE_SCRIPT <- "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
+TEMPLATE_SCRIPT <- "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
 
 #Specify which data to analyse
 Input_Directory_List <- 
-  c("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221006_Elisa_doseresponse",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221124_Elisa_doseresponse",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221208_Elisa_doseresponse")
+  c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221006_Elisa_doseresponse",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221124_Elisa_doseresponse",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20221208_Elisa_doseresponse")
 
 # Run the setup -----------------------------------------------------------
 All_days_data <- data.frame()
@@ -19,7 +20,7 @@ for (Input_Directory in Input_Directory_List){
 
   print(Input_Directory)
   source(TEMPLATE_SCRIPT, local = T)
-  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][8], "_"))[[1]][1]
+  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][7], "_"))[[1]][1]
   All_days_data <- rbind(All_days_data, All_plates_data)
 
   rm(
@@ -93,9 +94,9 @@ Plot_Fx <- function(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_te
 }
 # cl232_cl255_cl257_ELISA -------------------------------------------------------------
 
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl232_cl255_cl257_ELISA.R", local = T)
+source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl232_cl255_cl257_ELISA.R", local = T)
 
 # cl247_cl255_cl263_ELISA -------------------------------------------------------------
 
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl247_cl255_cl263_ELISA.R", local = T)
+source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl247_cl255_cl263_ELISA.R", local = T)
 

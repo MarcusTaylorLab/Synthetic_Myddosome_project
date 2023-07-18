@@ -64,7 +64,18 @@ ggplot(
   )+
   color_palette(
     palette = color_doseresponse
-  ) +
+  )+
+  geom_point(
+    data = Dose_plot,
+    aes(
+      x = Stimulation_Condition,
+      y = Relative_IL2_concentration_mean,
+      fill = Cohort
+    ),
+    size = 1,
+    color = "black",
+    shape = 21
+  )+
   geom_errorbar(
     data = Dose_stats,
     aes(
@@ -73,17 +84,12 @@ ggplot(
       ymin = Relative_IL2_concentration_mean - Relative_IL2_concentration_sd,
       ymax = Relative_IL2_concentration_mean + Relative_IL2_concentration_sd
     ),
-    linewidth = .75,
+    linewidth = .4,
     width = 0.25,
     color = "black"
   )+
-  geom_point(
-    data = Dose_plot,
-    aes(
-      x = Stimulation_Condition,
-      y = Relative_IL2_concentration_mean
-    ),
-    size = 2
+  fill_palette(
+    palette = color_doseresponse
   )+
   scale_x_continuous(
     trans = "log10",
@@ -94,7 +100,7 @@ ggplot(
     y = "relative IL-2 secretion",
     x = "IL-1 (ng/mL)"
   ) +
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
     axis.text.x = element_text(color = "black"),
@@ -102,13 +108,13 @@ ggplot(
     )
 
 
-setwd("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
 
 ggsave(
   "cl247_cl255_cl263_ELISA_doseresponse.pdf",
   plot = last_plot(),
-  scale = 3,
+  scale = 1,
   units = "mm",
-  height = 47,
-  width = 88
+  height = 35,
+  width = 70
 )

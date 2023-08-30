@@ -1,11 +1,9 @@
 # Cell Summary Table for the Dwell Time Calculation -----------------------
-
 #Table for the Dwell Time
 Cell_Summary<-
   Table %>%
   filter(
     PROTEIN == "MyD88",
-    COHORT %in% c("MyD88 TRAF6", "MyD88-TRAF6-BD TRAF6", "MyD88-TIR-TRAF6-BD TRAF6"),
     NORMALIZED_INTENSITY >= 1
   ) %>% 
   group_by(
@@ -16,7 +14,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -47,26 +45,30 @@ Cell_Summary<-
   mutate(
     CATEGORY_DWELL_TIME = 
       fcase(
-        DWELL_TIME == 0, "0 s",
-        DWELL_TIME <= 12 & DWELL_TIME != 0, "4-12 s",
-        DWELL_TIME > 12, ">12 s"
+        DWELL_TIME == 0, "<4 s",
+        DWELL_TIME <= 8 & DWELL_TIME != 0, "4-8 s",
+        DWELL_TIME >= 12 & DWELL_TIME <= 40, "12-40 s",
+        DWELL_TIME > 40, ">40 s"
       )
   ) %>% 
   as.data.table()
+
+Cell_Summary$CATEGORY_DWELL_TIME <- factor(
+  Cell_Summary$CATEGORY_DWELL_TIME, levels = c(
+    "<4 s",
+    "4-8 s",
+    "12-40 s",
+    ">40 s"
+  )
+)
 
 Cell_Summary$COHORT <- factor(
   Cell_Summary$COHORT, levels = c(
     "MyD88 TRAF6",
     "MyD88-TRAF6-BD TRAF6",
-    "MyD88-TIR-TRAF6-BD TRAF6"
-  )
-)
-
-Cell_Summary$CATEGORY_DWELL_TIME <- factor(
-  Cell_Summary$CATEGORY_DWELL_TIME, levels = c(
-    "0 s",
-    "4-12 s",
-    ">12 s"
+    "MyD88-TIR-TRAF6-BD TRAF6",
+    "BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6",
+    "MyD88-DHF91-TRAF6-BD TRAF6"
   )
 )
 
@@ -150,107 +152,67 @@ Mean_Total <-
   ) %>% 
   as.data.table()
 
-#create a list for comparisons
-my_comparison <- 
-  list(
-    c("MyD88 TRAF6", "MyD88-TRAF6-BD TRAF6"),
-    c("MyD88 TRAF6", "MyD88-TIR-TRAF6-BD TRAF6"),
-    c("MyD88-TRAF6-BD TRAF6", "MyD88-TIR-TRAF6-BD TRAF6")
-  )
-
-color_violin<-c(
-  "MyD88-TRAF6-BD TRAF6" = "#117733", 
-  "MyD88 TRAF6" = "#44AA99",
-  "MyD88-TIR-TRAF6-BD TRAF6" = "#332288"
-)
-
-# Beeswarm plot --------------------------------------------------------
+# Violin plot --------------------------------------------------------
 ggplot(
   data = Mean_Cell,
   aes(
     x = COHORT,
     y = PCT_RECRUITMENT*100,
     fill = COHORT,
-    color = COHORT
-  )
+    grop = CATEGORY_DWELL_TIME
+    )
 )+
-  geom_beeswarm(
-    aes(
-      shape = Mean_Cell$SHAPE
-    ),
-    dodge.width = 1,
-    cex = 2,
-    priority = "density",
-    #color = "black",
-    alpha = 1,
-    size = 2.5
+  geom_violin(
+    alpha = 0.7,
+    scale = "width",
+    linewidth = 0.2,
+    color = "black"
+  )+
+  geom_boxplot(
+    width = .2,
+    outlier.shape = NA,
+    fill = NA,
+    linewidth = 0.4,
+    color = "black"
   )+
   geom_point(
     data = Mean_Replicates,
-    aes(
-      x = COHORT,
-      y = PCT_RECRUITMENT*100,
-      group = COHORT,
-      fill = COHORT,
-      shape = Mean_Replicates$SHAPE
-    ),
-    size = 3,
-    stroke = 2,
-    color = "black",
-    fill = NA,
-    position = position_jitterdodge (
-      dodge.width = 1,
-      jitter.width = .7,
-      seed = 7
-    )
-  )+
-  geom_errorbar(
-    data = Mean_Total,
-    aes(
-      ymin = (PCT_RECRUITMENT-SEM_PCT_RECRUITMENT)*100,
-      ymax = (PCT_RECRUITMENT+SEM_PCT_RECRUITMENT)*100
-    ),
-    position = position_dodge(width = 1),
-    width = 0.2,
-    color = "black",
-    size = 1
+    position = position_jitter(height=0.3, width=0),
+    size = 0.75
   )+
   geom_pwc(
     data = Mean_Replicates,
     method = "t.test",
     label = "p.signif",
-    comparisons = my_comparison,
     tip.length = 0,
     vjust = 0.5, 
     hide.ns = TRUE
   )+
-  scale_shape_identity(
-  )+
-  facet_wrap(
-    ~CATEGORY_DWELL_TIME
-  )+
   labs(
-    y = "% of recruitments",
-    title = "Lifetime of TRAF6 (s)"
+    y = "% recruitments per cell",
+    title = "TRAF6 LT (s)"
   )+
-  scale_y_continuous(
-    limits = c(0, 120),
-    breaks = c(25, 50, 75, 100)
+  scale_x_discrete(
+    labels = c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
+  )+
+  facet_rep_wrap(
+    ~CATEGORY_DWELL_TIME,
+    ncol = 4
   )+
   fill_palette(
     palette = color_violin
   )+
-  color_palette(
-    palette = color_violin
-  )+ 
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 9
+                )+
   theme(
     legend.position = "0",
-    plot.title = element_text(hjust = 0.5,
-                              size = 22),
+    plot.margin = margin(l= 0.1, unit = "native"),
+    plot.title = element_text(hjust = -0.2, vjust = -7, size = 9),
     #strip.text = element_blank(),
-    axis.text = element_text(color = "black"),
-    axis.text.x = element_blank(),
+    axis.text.x = element_text(color = "black",
+                             size = 7,
+                             angle = 45,
+                             vjust = 0.5,),
     axis.title.x = element_blank(),
     strip.background = element_blank()
   )
@@ -258,10 +220,11 @@ ggplot(
 setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S2")
 
 ggsave(
-  "cl069_cl232_cl240_TRAF6-LT_beeswarm.pdf",
-  scale = 3,
+  "cl069_cl232_cl236_cl240_cl321_TRAF6-LT_all-recruitments_violin.pdf",
+  plot = last_plot(),
+  scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 40,
-  width = 90
+  height = 80,
+  width = 184
 )

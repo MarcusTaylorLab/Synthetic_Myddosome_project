@@ -114,6 +114,7 @@ ggsave(
   "cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC-DATE_path.pdf",
   scale = 3,
   units = "mm",
+  family = "Helvetica",
   height = 30,
   width = 60
 )

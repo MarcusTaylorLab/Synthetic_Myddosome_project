@@ -4,7 +4,6 @@ Cell_Summary<-
   Table %>%
   filter(
     PROTEIN == "MyD88",
-    COHORT %in% c("MyD88 TRAF6", "MyD88-TRAF6-BD TRAF6", "MyD88-TIR-TRAF6-BD TRAF6"),
     NORMALIZED_INTENSITY >= 1
   ) %>% 
   group_by(
@@ -49,29 +48,25 @@ Cell_Summary<-
         DWELL_TIME == 0, "0 s",
         DWELL_TIME <= 12 & DWELL_TIME != 0, "4-12 s",
         DWELL_TIME > 12, ">12 s"
-      ),
-    COHORT =
-      fcase(
-        COHORT == "MyD88-TRAF6-BD TRAF6", "MyD88-T6BM", 
-        COHORT == "MyD88 TRAF6", "MyD88",
-        COHORT == "MyD88-TIR-TRAF6-BD TRAF6", "TIR-T6BM"
       )
   ) %>% 
   as.data.table()
-
-Cell_Summary$COHORT <- factor(
-  Cell_Summary$COHORT, levels = c(
-    "MyD88",
-    "MyD88-T6BM",
-    "TIR-T6BM"
-    )
-)
 
 Cell_Summary$CATEGORY_DWELL_TIME <- factor(
   Cell_Summary$CATEGORY_DWELL_TIME, levels = c(
     "0 s",
     "4-12 s",
     ">12 s"
+  )
+)
+
+Cell_Summary$COHORT <- factor(
+  Cell_Summary$COHORT, levels = c(
+    "MyD88 TRAF6",
+    "MyD88-TRAF6-BD TRAF6",
+    "MyD88-TIR-TRAF6-BD TRAF6",
+    "BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6",
+    "MyD88-DHF91-TRAF6-BD TRAF6"
   )
 )
 
@@ -155,120 +150,91 @@ Mean_Total <-
   ) %>% 
   as.data.table()
 
-#create a list for comparisons
-my_comparison <- 
-  list(
-    c("MyD88", "MyD88-T6BM"),
-    c("MyD88", "TIR-T6BM"),
-    c("MyD88-T6BM", "TIR-T6BM")
-  )
-
 # Just plot the long lived recruitments
 Mean_Cell <- Mean_Cell %>% filter(CATEGORY_DWELL_TIME == ">12 s")
 Mean_Replicates <- Mean_Replicates %>% filter(CATEGORY_DWELL_TIME == ">12 s")
 Mean_Total <- Mean_Total  %>% filter(CATEGORY_DWELL_TIME == ">12 s")
 
-color_violin_LT<-c(
-  "MyD88-T6BM" = "#117733", 
-  "MyD88" = "#44AA99",
-  "TIR-T6BM" = "#332288"
+# Beeswarm plot --------------------------------------------------------
+ggplot(
+  data = Mean_Cell,
+  aes(
+    x = COHORT,
+    y = PCT_RECRUITMENT*100,
+    fill = COHORT
+    )
+)+
+  geom_violin(
+    alpha = 0.7,
+    scale = "width",
+    linewidth = 0.2,
+    color = "black"
+    
+  )+
+  geom_boxplot(
+    width = .2,
+    outlier.shape = NA,
+    fill = NA,
+    linewidth = 0.4,
+    color = "black"
+  )+
+  geom_point(
+    data = Mean_Replicates,
+    position = position_jitter(height=0.3, width=0),
+    size = 0.75
+  )+
+  # geom_errorbar(
+  #   data = Mean_Total,
+  #   aes(
+  #     ymin = (PCT_RECRUITMENT-SEM_PCT_RECRUITMENT)*100,
+  #     ymax = (PCT_RECRUITMENT+SEM_PCT_RECRUITMENT)*100
+  #   ),
+  #   position = position_dodge(width = 1),
+  #   width = 0.2,
+  #   color = "black",
+  #   size = 1
+  # )+
+  geom_pwc(
+    data = Mean_Replicates,
+    method = "t.test",
+    label = "p.signif",
+    comparisons = my_comparison,
+    tip.length = 0,
+    vjust = 0.5, 
+    hide.ns = TRUE
+  )+
+  labs(
+    y = "% long lived \n recruitments per cell",
+    #title = "Lifetime of TRAF6 (s)"
+  )+
+  scale_y_continuous(
+    #limits = c(0, 120),
+    #breaks = c(25, 50, 75, 100)
+  )+
+  scale_x_discrete(
+    labels = c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
+  )+
+  fill_palette(
+    palette = color_violin
+  )+
+  theme_classic(base_size = 9)+
+  theme(
+    legend.position = "0",
+    #strip.text = element_blank(),
+    axis.text = element_text(color = "black",
+                             size = 7),
+    axis.title.x = element_blank(),
+    strip.background = element_blank()
+  )
+
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
+
+ggsave(
+  "cl069_cl232_cl236_cl240_cl321_TRAF6-LT_violin.pdf",
+  plot = last_plot(),
+  scale = 1,
+  units = "mm",
+  family = "Arial",
+  height = 35,
+  width = 86
 )
-
- # Beeswarm plot --------------------------------------------------------
- ggplot(
-     data = Mean_Cell,
-     aes(
-         x = COHORT,
-         y = PCT_RECRUITMENT*100,
-         fill = COHORT,
-         color = COHORT
-       )
-   )+
-     geom_beeswarm(
-         aes(
-             shape = Mean_Cell$SHAPE
-             ),
-         dodge.width = 1,
-         cex = 2,
-         priority = "density",
-         #color = "black",
-         alpha = 0.7,
-         size = 2
-       )+
-     geom_point(
-         data = Mean_Replicates,
-         aes(
-             x = COHORT,
-             y = PCT_RECRUITMENT*100,
-             group = COHORT,
-             fill = COHORT,
-             shape = Mean_Replicates$SHAPE
-           ),
-         size = 2,
-         stroke = 1.5,
-         color = "black",
-         fill = NA,
-         position = position_jitterdodge (
-             dodge.width = 1,
-             jitter.width = .7,
-             seed = 7
-           )
-       )+
-     geom_errorbar(
-       data = Mean_Total,
-       aes(
-         ymin = (PCT_RECRUITMENT-SEM_PCT_RECRUITMENT)*100,
-         ymax = (PCT_RECRUITMENT+SEM_PCT_RECRUITMENT)*100
-       ),
-       position = position_dodge(width = 1),
-       width = 0.2,
-       color = "black",
-       size = 1
-     )+
-    geom_pwc(
-         data = Mean_Replicates,
-         method = "t.test",
-         label = "p.signif",
-         comparisons = my_comparison,
-         tip.length = 0,
-         vjust = 0.5, 
-         hide.ns = TRUE
-       )+
-     scale_shape_identity(
-       )+
-     labs(
-         y = "% long lived \n recruitments per cell",
-         #title = "Lifetime of TRAF6 (s)"
-       )+
-     scale_y_continuous(
-         #limits = c(0, 120),
-         #breaks = c(25, 50, 75, 100)
-       )+
-     fill_palette(
-         palette = color_violin_LT
-       )+
-     color_palette(
-         palette = color_violin_LT
-       )+ 
-     theme_classic(base_size = 9)+
-     theme(
-         legend.position = "0",
-         #strip.text = element_blank(),
-         axis.text = element_text(color = "black",
-                                    size = 7),
-         axis.text.x = element_blank(),
-         axis.title.x = element_blank(),
-         strip.background = element_blank()
-       )
-
- setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
-
- ggsave(
-     "cl069_cl232_cl240_TRAF6-LT_beeswarm.pdf",
-     scale = 1,
-     units = "mm",
-     family = "Helvetica",
-     height = 35,
-     width = 70
-   )
- 

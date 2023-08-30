@@ -63,8 +63,8 @@ ggplot(
   )+
   geom_point(
     data = Replicates,
-    position = position_jitter(height=0.2, width=0),
-    size = 1
+    position = position_jitter(height=0.3, width=0),
+    size = 0.75
   )+
   labs(
     y = "Cell lines",
@@ -80,12 +80,13 @@ ggplot(
   fill_palette(
     palette = color_violin
   )+
-  theme_classic(base_size = 10)+
+  theme_classic(base_size = 7)+
   theme(
     legend.position = "0",
     legend.title = element_blank(),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 6),
     axis.title.y = element_blank()
   )
 # +
@@ -105,6 +106,7 @@ ggsave(
   "cl069_cl232_cl236_cl240_cl321__MAX-NORM-INT-MYD88_violin.pdf",
   scale = 1,
   units = "mm",
+  family = "Helvetica",
   height = 35,
-  width = 75
+  width = 55
 )

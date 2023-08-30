@@ -5,8 +5,7 @@ Cell_Summary<-
   Table %>%
   filter(
     PROTEIN == "MyD88",
-    COHORT %in% c("MyD88 TRAF6", "MyD88-TRAF6-BD TRAF6", "MyD88-TIR-TRAF6-BD TRAF6"),
-    NORMALIZED_INTENSITY >= 1
+    NORMALIZED_INTENSITY >= 4.5
   ) %>% 
   group_by(
     UNIVERSAL_TRACK_ID
@@ -16,7 +15,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -50,23 +49,9 @@ Cell_Summary<-
         DWELL_TIME == 0, "0 s",
         DWELL_TIME <= 12 & DWELL_TIME != 0, "4-12 s",
         DWELL_TIME > 12, ">12 s"
-      ),
-    COHORT =
-      fcase(
-        COHORT == "MyD88-TRAF6-BD TRAF6", "MyD88-T6BM", 
-        COHORT == "MyD88 TRAF6", "MyD88",
-        COHORT == "MyD88-TIR-TRAF6-BD TRAF6", "TIR-T6BM"
       )
   ) %>% 
   as.data.table()
-
-Cell_Summary$COHORT <- factor(
-  Cell_Summary$COHORT, levels = c(
-    "MyD88",
-    "MyD88-T6BM",
-    "TIR-T6BM"
-  )
-)
 
 Cell_Summary$CATEGORY_DWELL_TIME <- factor(
   Cell_Summary$CATEGORY_DWELL_TIME, levels = c(
@@ -76,17 +61,7 @@ Cell_Summary$CATEGORY_DWELL_TIME <- factor(
   )
 )
 
-Mean_LT <-
-  Cell_Summary %>% 
-  group_by(
-    COHORT
-  ) %>% 
-  summarise(
-    LT_TRAF6 = mean(DWELL_TIME),
-    SEM_LT_TRAF6 = sem(DWELL_TIME)
-  )
-
-Mean_Total <- 
+LT_NO <- 
   Cell_Summary %>% 
   group_by(
     COHORT,
@@ -102,70 +77,103 @@ Mean_Total <-
     COHORT
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
+    TOTAL_EVENTS = N_CATEGORY_DWELL_TIME
+  ) %>% 
+  as.data.table()
+
+Mean_LT <-
+  Cell_Summary %>% 
+  group_by(
+    COHORT
+  ) %>% 
+  summarise(
+    LT_TRAF6 = mean(DWELL_TIME),
+    SEM_LT_TRAF6 = sem(DWELL_TIME)
+  )
+
+Mean_Total <- 
+  Cell_Summary %>% 
+  group_by(
+    COHORT,
+    DWELL_TIME
+  ) %>% 
+  count(
+    DWELL_TIME, #Values to count
+    COHORT,
+    name = "N_CATEGORY_DWELL_TIME", #Name of the Column with the counts
+    .drop = FALSE
+  ) %>% 
+  group_by(
+    COHORT
+  ) %>% 
+  mutate(
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
+    TOTAL_EVENTS = N_CATEGORY_DWELL_TIME
   ) %>% 
   group_by(
     COHORT,
-    CATEGORY_DWELL_TIME
+    DWELL_TIME
   ) %>% 
   summarise(
     PCT_RECRUITMENT = mean(PCT_RECRUITMENT)
   ) %>% 
   as.data.table()
 
-color_violin_LT<-c(
-  "MyD88-T6BM" = "#117733", 
-  "MyD88" = "#44AA99",
-  "TIR-T6BM" = "#332288"
-)
-
-color_fill <- c(
-  "0 s" = "#f0f0f0",
-  "4-12 s" = "#bdbdbd",
-  ">12 s" = "#636363"
-)
-
 ggplot(
   data = Mean_Total,
   aes(
-    x = COHORT,
-    y = PCT_RECRUITMENT*100,
-    color = COHORT,
-    fill = CATEGORY_DWELL_TIME
+    y = COHORT,
+    x = PCT_RECRUITMENT*100,
+    fill = DWELL_TIME
   )
 )+
   geom_col(
-    width = 0.7,
-    size = .75
+    width = 0.7
   )+
-  color_palette(
-    palette = color_violin_LT
-  )+
-  fill_palette(
-    palette = color_fill
+  binned_scale(aesthetics = "fill",
+               scale_name = "stepsn", 
+               palette = function(x) viridis(5),
+               breaks = c(0, 4, 8, 12, 40),
+               right = FALSE,
+               guide = "colorbar",
+               labels = c(0, 4, 8, "12-40", "≥40")
   )+
   labs(
-    y = "% of total recruitments",
+    x = "% of total recruitments",
   )+
-  theme_classic(base_size = 9)+
-  theme(
-    legend.position = "right",
-    axis.title.x = element_blank(),
-    axis.text = element_text(color = "black",
-                             size = 7),
-    axis.text.x = element_blank()
-  ) +
+  scale_y_discrete(
+    labels = c(bquote(chMyD88^DHF91), bquote(chMyD88^bDLD), bquote(chMyD88^TIR), "chMyD88", "WT")
+  )+
+  theme_classic(base_size = 7)+
   guides(
-    color = "none",  # Remove legend for color aesthetic
-    fill = guide_legend(title = "LT of TRAF6")  # Set legend title for fill aesthetic
+    fill = guide_legend(title = "TRAF6 LT (s)",
+                        title.position = "top",
+                        title.hjust = 0
+                        )  # Set legend title for fill aesthetic
+  )+
+  theme(
+    legend.position = "top",
+    legend.box.spacing = margin(0.5),
+    legend.justification = "right",
+    axis.text = element_text(color = "black",
+                             size = 6),
+    legend.text = element_text(color = "black",
+                               size = 6,
+                               hjust = -1
+                              ),
+    axis.title.y = element_blank(),
+    legend.key.size = unit(2, "mm"),
+    legend.title = element_text(size = 8)
   )
 
 setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
 
 ggsave(
-  "cl069_cl232_cl240_TRAF6-LT_col.pdf",
+  "cl069_cl232_cl236_cl240_cl321_TRAF6-LT_col.pdf",
   scale = 1,
   units = "mm",
-  height = 35,
-  width = 50
+  family = "Helvetica",
+  height = 45,
+  width = 45
 )

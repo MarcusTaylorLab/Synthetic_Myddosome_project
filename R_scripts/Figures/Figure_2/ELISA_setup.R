@@ -1,14 +1,17 @@
 library(pacman)
 pacman::p_load(data.table, tidyr, dplyr, ggplot2, interleave, ggpubr, stringr)
+filter <- dplyr::filter
 
 #provide location of template script
-TEMPLATE_SCRIPT <- "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
+TEMPLATE_SCRIPT <- "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/ELISA analysis_template.R"
 
 #Specify which data to analyse
 Input_Directory_List <- 
-  c("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
-    "//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa")
+  c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20230621_ELISA"
+  )
 
 # Run the setup -----------------------------------------------------------
 All_days_data <- data.frame()
@@ -17,7 +20,7 @@ for (Input_Directory in Input_Directory_List){
 
   print(Input_Directory)
   source(TEMPLATE_SCRIPT, local = T)
-  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][8], "_"))[[1]][1]
+  All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][7], "_"))[[1]][1]
   All_days_data <- rbind(All_days_data, All_plates_data)
 
   rm(
@@ -72,27 +75,26 @@ ggplot(
     method = "wilcox.test",
     label = "p.signif"
   )+
-  fill_palette(
-    palette = color_elisa
-  )+
   scale_y_continuous(
     breaks = scales::breaks_width(1000)
   ) +
+  scale_fill_manual(
+    labels = c("- IL-1", "+ IL-1"),
+    values = c("white", "grey50")
+  )+
   labs(
     y = "IL-2 (pg/mL)"
   ) +
-  theme_classic() +
+  theme_classic(base_size = 8) +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 16, colour = "black"),
+    axis.text.x = element_text(size = 7, 
+                               colour = "black"),
     axis.title.x = element_blank(),
-    axis.text.y = element_text(size = 15),
-    axis.title.y = element_text(size = 18),
+    axis.text.y = element_text(size = 7),
+    axis.title.y = element_text(size = 8),
     legend.position = "top",
     legend.title = element_blank(),
-    legend.text = element_text(size = 16, color = "black")
+    legend.text = element_text(size = 8, color = "black")
   )
+
 }
-
-# cl232_cl236_ELISA -------------------------------------------------------------
-
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2/cl232_cl236_ELISA.R", local = T)

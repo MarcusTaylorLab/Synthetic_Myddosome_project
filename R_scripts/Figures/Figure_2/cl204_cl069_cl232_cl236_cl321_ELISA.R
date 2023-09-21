@@ -24,12 +24,13 @@ Factor <-
   ) %>% 
   summarise(
     REL_IL2 = mean(REL_IL2)
-  )
+  ) %>% 
+  as.numeric()
 
 All_days_data <-
   All_days_data %>% 
   mutate(
-    Relative_Intensity = REL_IL2*(1/2.23)
+    Relative_Intensity = REL_IL2*(1/Factor)
   )
 
 # #Figure 2: DHF91-TIR-T6BM, WT, 3x KO-------------------------------------------------------------------------

@@ -9,100 +9,26 @@ TEMPLATE_SCRIPT <- "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELI
 Input_Directory_List <- 
   c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa",
     "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa",
-    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa")
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa"
+  )
 
 # Run the setup -----------------------------------------------------------
 All_days_data <- data.frame()
 
 for (Input_Directory in Input_Directory_List){
-
+  
   print(Input_Directory)
   source(TEMPLATE_SCRIPT, local = T)
   All_plates_data$Date <- (strsplit(strsplit(Input_Directory, "/")[[1]][7], "_"))[[1]][1]
   All_days_data <- rbind(All_days_data, All_plates_data)
-
+  
   rm(
     All_plates_data
-)
-
+  )
+  
 }
 
 All_days_data$Stimulation_Condition <- factor(All_days_data$Stimulation_Condition, levels=c("Unstimulated", "Stimulated"))
 
-#Define the plotting function
-Plot_Fx <- function(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_test){  
-  
-  color_elisa <- c("Unstimulated" = "white",
-                   "Stimulated" = "grey")
-  
-  ggplot(
-    data = chimeric_MyD88_stats,
-    aes(
-      x = Cohort,
-      y = IL2_concentration_Dilution_Factor_mean,
-      fill = Stimulation_Condition
-    )
-  ) +
-    geom_col(
-      position = position_dodge(width = 0.5),
-      color = "black",
-      width = 0.5
-    ) +
-    geom_errorbar(
-      data = chimeric_MyD88_stats,
-      aes(
-        x = Cohort,
-        ymin = IL2_concentration_Dilution_Factor_mean - IL2_concentration_Dilution_Factor_sd,
-        ymax = IL2_concentration_Dilution_Factor_mean + IL2_concentration_Dilution_Factor_sd
-      ),
-      linewidth = .75,
-      position = position_dodge(width = 0.5),
-      width = 0.25
-    ) +
-    geom_point(
-      data = chimeric_MyD88_plot,
-      aes(
-        x = Cohort,
-        y = IL2_concentration_Dilution_Factor_mean
-      ),
-      size = 1,
-      position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.4)
-    )+
-    stat_compare_means(
-      data = chimeric_MyD88_test,
-      method = "wilcox.test",
-      label = "p.signif",
-      hide.ns = TRUE
-    )+
-    scale_y_continuous(
-      breaks = scales::breaks_width(1000)
-    )+
-    fill_palette(
-      palette = color_elisa
-    ) +
-    labs(
-      y = "IL-2 (pg/mL)"
-    ) +
-    theme_classic(base_size = 10) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 10, colour = "black"),
-      axis.title.x = element_blank(),
-      axis.text.y = element_text(size = 9),
-      axis.title.y = element_text(size = 11),
-      legend.position = "top",
-      legend.title = element_blank(),
-      legend.text = element_text(size = 10, color = "black")
-    )
-}
-
-# cl232_ELISA -------------------------------------------------------------
-
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 1/cl232_ELISA.R", local = T)
-
-# cl240_ELISA -------------------------------------------------------------
-
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 1/cl240_ELISA.R", local = T)
-
-# cl234_ELISA -------------------------------------------------------------
-
-source("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 1/cl234_ELISA.R", local = T)
+#Standard error of the mean function
+sem <- function(x) sd(x)/sqrt(length(x))

@@ -49,6 +49,33 @@ Tracks <-
     #intensity you can correct for the overall bleaching.
     # TIME_ADJUSTED = (FRAMES-FRAMES[2])*4
     #whatever your frame rate was
+    COHORT = fcase(
+      COHORT == "cl232", "cMyD88",
+      COHORT == "cl240", "cMyD88^{TIR}",
+      COHORT == "cl321", "cMyD88^{bDLD}",
+      COHORT == "cl236", "cMyD88^{DHF91}"
+    )
+  )
+
+Tracks$COHORT <- factor(
+  Tracks$COHORT, levels = c(
+    "cMyD88",
+    "cMyD88^{TIR}",
+    "cMyD88^{bDLD}",
+    "cMyD88^{DHF91}"
+    )
+)
+
+#make a table with the individual cell values
+Cells <- 
+  Tracks %>%
+  mutate(
+    DATE = substring(IMAGE, 1, 8),
+    TIME_ADJUSTED = (FRAMES-FRAMES[2])*4,
+    TIME_SET_0 = TIME_ADJUSTED - TIME_ADJUSTED[5]
+  ) %>% 
+  filter(
+    TIME_SET_0 <= 136
   )
 
 #making a table with the means summarized by cohort and day
@@ -68,22 +95,10 @@ Means <-
     TIME_SET_0
   ) %>%
   summarize(
-    MEAN = mean(RELATIVE_INTENSITY_ADJUSTED),
+    RELATIVE_INTENSITY_ADJUSTED = mean(RELATIVE_INTENSITY_ADJUSTED),
     VARIANCE = var(RELATIVE_INTENSITY_ADJUSTED)
   )
-# group_by(
-#   DATE
-# ) %>% 
-# distinct(
-#   MEAN, .keep_all = TRUE
-#   ) %>% 
-# group_by(
-#   COHORT,
-#   TIME
-# ) %>% 
-# summarize(
-#   MEANMEAN = mean(MEAN)
-# )
+
 
 #means 
 MeanofMeans <- 
@@ -93,32 +108,32 @@ MeanofMeans <-
     TIME_SET_0
   ) %>% 
   summarize(
-    MEANOFM = mean(MEAN),
+    RELATIVE_INTENSITY_ADJUSTED = mean(RELATIVE_INTENSITY_ADJUSTED),
     SDDEV = sqrt(mean(VARIANCE)),
     SEM = sqrt(mean(VARIANCE))/sqrt(length(VARIANCE))
-    )
+  )
 
 color_pal <- 
   c(
-    "cl232" = "#117733", 
-    "cl240" = "#332288",
-    "cl236" = "#882255",
-    "cl321" = "#AA4499"
+    "cMyD88"= "#117733",
+    "cMyD88^{TIR}" = "#332288",
+    "cMyD88^{bDLD}" = "#AA4499",
+    "cMyD88^{DHF91}" = "#882255"
   )
 
 #Plot the data
 ggplot(
   data = MeanofMeans,
   aes(
-    y = MEANOFM,
+    y = RELATIVE_INTENSITY_ADJUSTED,
     x = TIME_SET_0
-    )
+  )
 )+
   geom_rect(
     aes(
-      xmin = -Inf, 
-      xmax = 0, 
-      ymin = -Inf, 
+      xmin = -Inf,
+      xmax = 0,
+      ymin = -Inf,
       ymax = Inf
     ),
     alpha = 0.1,
@@ -132,31 +147,37 @@ ggplot(
       xintercept = 0
     )
   )+
-  geom_path(
+  geom_line(
+    data = Cells,
     aes(
-      color = COHORT
+      y = RELATIVE_INTENSITY_ADJUSTED,
+      x = TIME_SET_0,
+      group = IMAGE
     ),
-    linewidth = 0.75
+    color = "grey50"
   )+
-  geom_ribbon(
+  geom_line(
     data = MeanofMeans,
     aes(
+      y = RELATIVE_INTENSITY_ADJUSTED,
       x = TIME_SET_0,
-      y = MEANOFM,
-      ymin = MEANOFM - SEM,
-      ymax = MEANOFM + SEM,
-      fill = COHORT
+      color = COHORT
     ),
-    alpha = 0.4
+    linewidth = 1.5
+  )+
+  facet_wrap(
+    ~COHORT,
+    ncol = 4,
+    labeller = label_parsed
   )+
   labs(
     x = "Time (s)",
-    y = "rel. int. (a.u.) ± s.e.m."
+    y = "Relative intensity (a.u.) ± s.e.m."
   )+
   annotate(
     geom = "text",
     label = "Bleach",
-    x = 20,
+    x = 25,
     y = 1,
     color = "gray48"
   )+
@@ -177,17 +198,17 @@ ggplot(
   )+
   theme(
     legend.position = "0",
-    axis.text = element_text(color = "black")
+    axis.text = element_text(colour = "black"),
+    strip.background = element_blank()
   )
 
-setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S3")
 
 ggsave(
-  "cl232_cl236_cl240_cl231_FRAP-overlay_PATH.pdf",
+  "cl232_cl236_cl240_cl231_FRAP-overlay_replicates_PATH.pdf",
   scale = 1,
-  family = "Helvetica",
   units = "mm",
   height = 50,
-  width = 60
+  width = 184
 )
 

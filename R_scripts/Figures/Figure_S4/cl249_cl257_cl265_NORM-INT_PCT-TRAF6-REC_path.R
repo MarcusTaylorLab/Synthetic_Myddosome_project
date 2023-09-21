@@ -12,41 +12,26 @@ Recruitment_List <-
       COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5, "1",
       COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1.5, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
     ),
-    NORMALIZED_INTENSITY = 2*round(NORMALIZED_INTENSITY/2) #so we round to even integers
+    NORMALIZED_INTENSITY = round(NORMALIZED_INTENSITY) #so we round to even integers
   ) %>% 
   group_by(
     COHORT,
-    NORMALIZED_INTENSITY,
-    IMAGE
+    NORMALIZED_INTENSITY
   ) %>% 
   filter(
-    n() >= 10 #so we only look at intensities where there are at least 5 events
+    n() >= 20 #so we only look at intensities where there are at least 5 events
   ) %>% 
   summarise(
+    count = n(),
     NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
     SEM_NORMALIZED_RECRUITMENT = sem(RECRUITMENT),
     SD_NORMALIZED_RECRUITMENT = sd(RECRUITMENT)
   ) %>% 
   as.data.table()
 
-Mean_of_Means <-
-  Recruitment_List %>% 
-  group_by(
-    COHORT,
-    NORMALIZED_INTENSITY
-  ) %>% 
-  filter(
-    n() >= 2 #so we only look at intensities where there are at least 2 replicates
-  ) %>%
-  summarise(
-    SEM_NORMALIZED_RECRUITMENT = sem(NORMALIZED_RECRUITMENT),
-    SD_NORMALIZED_RECRUITMENT = sd(NORMALIZED_RECRUITMENT),
-    NORMALIZED_RECRUITMENT = mean(NORMALIZED_RECRUITMENT)
-  )
-
 #plot the percentage of TRAF6 recruitment over normalized Intensity
 ggplot(
-  data = Mean_of_Means
+  data = Recruitment_List
 )+
   geom_path(
     aes(
@@ -58,17 +43,6 @@ ggplot(
     alpha = 1,
     linewidth = 0.5
   )+
-  geom_ribbon(
-    aes(
-      x = NORMALIZED_INTENSITY,
-      ymin = (NORMALIZED_RECRUITMENT-SEM_NORMALIZED_RECRUITMENT)*100,
-      ymax = (NORMALIZED_RECRUITMENT+SEM_NORMALIZED_RECRUITMENT)*100,
-      group = COHORT,
-      fill = COHORT
-    ),
-    alpha = 0.3,
-    linewidth = 0
-  )+
   color_palette(
     palette = color_violin
   )+
@@ -76,12 +50,12 @@ ggplot(
     palette = color_violin
   )+
   scale_x_continuous(
-    limits = c(0, 100),
+    limits = c(0, 180),
     breaks = scales::breaks_width(20)
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers colocalizing \n with TRAF6 (% ± s.e.m.)"
+    y = "oligomers \n colocalizing with TRAF6"
   )+
   theme_classic(base_size = 9)+
   theme(
@@ -91,10 +65,10 @@ ggplot(
     legend.title = element_blank()
   )
 
-setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S4")
 
 ggsave(
-  "cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path.pdf",
+  "cl249_cl257_cl265_NORM-INT_PCT-TRAF6-REC_path.pdf",
   scale = 1,
   units = "mm",
   family = "Helvetica",

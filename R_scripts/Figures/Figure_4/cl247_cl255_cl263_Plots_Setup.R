@@ -7,7 +7,7 @@ filter <- dplyr::filter
 TablePaths <- c(
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221129 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 001/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221207 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 002/Essential.csv.gz",
-  #"/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221207 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 006/Essential.csv.gz",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221207 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 006/Essential.csv.gz",
   #"/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20230309 1.5nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 002/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20230317 1.5nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 001/Essential.csv.gz",
   
@@ -16,7 +16,7 @@ TablePaths <- c(
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-3x TRAF6/20230309 1.5nM_cl255_TRAF6_MyD88-GFP-synTRAF6-BD-3x 001/Essential.csv.gz",
   
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-5x TRAF6/20221123 4nM_cl263_TRAF6_MyD88-GFP-synTRAF6-BD-5x 001/Essential.csv.gz",
-  #"/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-5x TRAF6/20221207 4nM_cl263_TRAF6_MyD88-GFP-synTRAF6-BD-5x 001/Essential.csv.gz",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-5x TRAF6/20221207 4nM_cl263_TRAF6_MyD88-GFP-synTRAF6-BD-5x 001/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-5x TRAF6/20230309 1.5nM_cl263_TRAF6_MyD88-GFP-synTRAF6-BD-5x 003/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-5x TRAF6/20230317 1.5nM_cl263_TRAF6_MyD88-GFP-synTRAF6-BD-5x 001/Essential.csv.gz"
 )
@@ -29,9 +29,9 @@ Table <- rbindlist(Table, fill = FALSE)
   
 #Create the same order for all the following plots
 Table$COHORT <- factor(
-  Table$COHORT, levels = c("MyD88-GFP-synTRAF6-BD-5x TRAF6",
+  Table$COHORT, levels = c("MyD88-GFP-synTRAF6-BD-1x TRAF6",
                            "MyD88-GFP-synTRAF6-BD-3x TRAF6",
-                           "MyD88-GFP-synTRAF6-BD-1x TRAF6"
+                           "MyD88-GFP-synTRAF6-BD-5x TRAF6"
   )
 )
 
@@ -44,19 +44,3 @@ color_violin<-c(
 
 #Standard error of the mean function
 sem <- function(x) sd(x)/sqrt(length(x))
-
-# cl247_cl255_cl263_MAX-NORM-INT-MYD88_violin ----------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4/cl247_cl255_cl263_MAX-NORM-INT-MYD88_violin.R")
-
-# cl247_cl255_cl263_MAX-NORM-INT-TRAF6_violin ----------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4/cl247_cl255_cl263_MAX-NORM-INT-TRAF6_violin.R")
-
-# cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path ----------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4/cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path.R")
-
-# cl247_cl255_cl263_TRAF6-LT_point ----------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4/cl247_cl255_cl263_TRAF6-LT_beeswarm.R")

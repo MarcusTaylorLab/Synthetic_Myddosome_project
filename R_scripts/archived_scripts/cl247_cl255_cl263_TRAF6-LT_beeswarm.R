@@ -15,7 +15,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -47,7 +47,7 @@ Cell_Summary<-
     CATEGORY_DWELL_TIME = 
       fcase(
         DWELL_TIME == 0, "0 s",
-        DWELL_TIME <= 12 & DWELL_TIME != 0, "4-12 s",
+        DWELL_TIME <= 8 & DWELL_TIME != 0, "4-12 s",
         DWELL_TIME > 12, ">12 s"
       )
   ) %>% 

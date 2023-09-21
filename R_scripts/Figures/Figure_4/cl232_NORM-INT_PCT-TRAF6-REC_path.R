@@ -5,31 +5,50 @@ Recruitment_List <-
     NORMALIZED_INTENSITY >= 1, #filter out the noise
     FRAMES_ADJUSTED <=100, #only take the frames without excessive bleaching
     FRAMES_SINCE_LANDING <= 200,
-    PROTEIN == "MyD88"
+    PROTEIN == "MyD88",
+    COHORT == "MyD88-TRAF6-BD TRAF6"
   ) %>% 
   mutate(
     RECRUITMENT = fcase(
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1, 1,
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1, 0 #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5, "1",
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1.5, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
     ),
-    NORMALIZED_INTENSITY = round(NORMALIZED_INTENSITY) #so we round to even integers
+    NORMALIZED_INTENSITY = 2*round(NORMALIZED_INTENSITY/2) #so we round to even integers
   ) %>% 
+  group_by(
+    COHORT,
+    NORMALIZED_INTENSITY,
+    IMAGE
+  ) %>% 
+  filter(
+    n() >= 3 #so we only look at intensities where there are at least 5 events
+  ) %>% 
+  summarise(
+    NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
+    SEM_NORMALIZED_RECRUITMENT = sem(RECRUITMENT),
+    SD_NORMALIZED_RECRUITMENT = sd(RECRUITMENT)
+  ) %>% 
+  as.data.table()
+
+Mean_of_Means <-
+  Recruitment_List %>% 
   group_by(
     COHORT,
     NORMALIZED_INTENSITY
   ) %>% 
   filter(
-    n() >= 25 #so we only look at intensities where there are at least 5 events
-  ) %>% 
+    n() >= 2 #so we only look at intensities where there are at least 2 replicates
+  ) %>%
   summarise(
-    NORMALIZED_RECRUITMENT = mean(RECRUITMENT),
-    SEM_NORMALIZED_RECRUITMENT = sem(RECRUITMENT)
-  ) %>% 
-  as.data.table()
+    counts = length(NORMALIZED_RECRUITMENT),
+    SEM_NORMALIZED_RECRUITMENT = sem(NORMALIZED_RECRUITMENT),
+    SD_NORMALIZED_RECRUITMENT = sd(NORMALIZED_RECRUITMENT),
+    NORMALIZED_RECRUITMENT = mean(NORMALIZED_RECRUITMENT)
+  )
 
 #plot the percentage of TRAF6 recruitment over normalized Intensity
 ggplot(
-  data = Recruitment_List
+  data = Mean_of_Means
 )+
   geom_path(
     aes(
@@ -59,12 +78,12 @@ ggplot(
     palette = color_violin
   )+
   scale_x_continuous(
-    limits = c(0, 100),
+    limits = c(0, 120),
     breaks = scales::breaks_width(20)
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers colocalizing \n with TRAF6 (% ± S.E.M.)"
+    y = "oligomers colocalizing \n with TRAF6 (% ± s.e.m.)"
   )+
   theme_classic(base_size = 7)+
   theme(
@@ -72,15 +91,15 @@ ggplot(
     axis.text = element_text(color = "black",
                              size = 6),
     legend.title = element_blank()
-    )
+  )
 
-setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
 
 ggsave(
-  "cl069_cl232_cl236_cl240_cl321_NORM-INT_PCT-TRAF6-REC_path.pdf",
+  "cl232_NORM-INT_PCT-TRAF6-REC_path.pdf",
   scale = 1,
-  family = "Helvetica",
   units = "mm",
-  height = 35,
-  width = 55
+  family = "Helvetica",
+  height = 30,
+  width = 80
 )

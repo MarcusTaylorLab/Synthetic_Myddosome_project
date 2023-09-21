@@ -44,8 +44,8 @@ Replicates<-
 ggplot(
   data = Tracks_TRAF6,
   aes(
-   y = COHORT,
-   x = MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1,
+   x = COHORT,
+   y = MAX_COMPLEMENTARY_NORMALIZED_INTENSITY_1,
    fill = COHORT
        )
 )+
@@ -64,22 +64,26 @@ ggplot(
     data = Replicates,
     position = position_jitter(height=0.2, width=0)
   )+
-  scale_x_log10(
+  scale_y_log10(
     breaks = scales::breaks_log(n = 10, base = 10)
   )+
+  scale_x_discrete(
+    labels = c(bquote(cMyD88^"1x"), bquote(cMyD88^"3x"), bquote(cMyD88^"5x"))
+  )+
   labs(
-    y = "Cell Lines",
-    x = "Max size of TRAF6"
+    y = "max size of TRAF6 (log)"
   )+
   coord_cartesian(
-    xlim = c(1.5, NA)
+    ylim = c(1.5, NA)
   )+
   theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
     legend.title = element_blank(),
-    axis.text.y = element_blank(),
-    axis.text.x = element_text(color = "black")
+    axis.title.y = element_text(color = "black"),
+    axis.title.x = element_blank(),
+    axis.text = element_text(color = "black",
+                             size = 7)
   )
 
 setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
@@ -88,6 +92,7 @@ ggsave(
   "cl247_cl255_cl263_MAX-NORM-INT-TRAF6_violin.pdf",
   scale = 1,
   units = "mm",
-  height = 35,
-  width = 70
+  family = "Helvetica",
+  height = 60,
+  width = 46
 )

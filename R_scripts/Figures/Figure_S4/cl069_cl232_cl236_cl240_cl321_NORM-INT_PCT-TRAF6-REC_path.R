@@ -20,7 +20,7 @@ Recruitment_List <-
     IMAGE
   ) %>% 
   filter(
-    n() >= 10 #so we only look at intensities where there are at least 5 events
+    n() >= 10 #so we only look at intensities where there are at least 3 events
   ) %>% 
   summarise(
     NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
@@ -28,6 +28,7 @@ Recruitment_List <-
     SD_NORMALIZED_RECRUITMENT = sd(RECRUITMENT)
   ) %>% 
   as.data.table()
+
 
 Mean_of_Means <-
   Recruitment_List %>% 
@@ -39,6 +40,7 @@ Mean_of_Means <-
     n() >= 2 #so we only look at intensities where there are at least 2 replicates
   ) %>%
   summarise(
+    counts = length(NORMALIZED_RECRUITMENT),
     SEM_NORMALIZED_RECRUITMENT = sem(NORMALIZED_RECRUITMENT),
     SD_NORMALIZED_RECRUITMENT = sd(NORMALIZED_RECRUITMENT),
     NORMALIZED_RECRUITMENT = mean(NORMALIZED_RECRUITMENT)
@@ -76,7 +78,7 @@ ggplot(
     palette = color_violin
   )+
   scale_x_continuous(
-    limits = c(0, 100),
+    limits = c(0, 160),
     breaks = scales::breaks_width(20)
   )+
   labs(
@@ -91,13 +93,13 @@ ggplot(
     legend.title = element_blank()
   )
 
-setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S4")
 
 ggsave(
-  "cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path.pdf",
+  "cl069_cl232_cl236_cl240_cl321_NORM-INT_PCT-TRAF6-REC-_path.pdf",
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 30,
+  height = 35,
   width = 90
 )

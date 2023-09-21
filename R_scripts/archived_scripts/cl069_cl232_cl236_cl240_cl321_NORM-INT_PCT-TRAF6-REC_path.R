@@ -9,44 +9,27 @@ Recruitment_List <-
   ) %>% 
   mutate(
     RECRUITMENT = fcase(
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5, "1",
-      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1.5, "0" #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1, 1,
+      COMPLEMENTARY_NORMALIZED_INTENSITY_1 < 1, 0 #If TRAF6 is colocalized RECRUITMENT will be 1, otherwise 0
     ),
-    NORMALIZED_INTENSITY = 2*round(NORMALIZED_INTENSITY/2) #so we round to even integers
+    NORMALIZED_INTENSITY = round(NORMALIZED_INTENSITY) #so we round to even integers
   ) %>% 
-  group_by(
-    COHORT,
-    NORMALIZED_INTENSITY,
-    IMAGE
-  ) %>% 
-  filter(
-    n() >= 10 #so we only look at intensities where there are at least 5 events
-  ) %>% 
-  summarise(
-    NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
-    SEM_NORMALIZED_RECRUITMENT = sem(RECRUITMENT),
-    SD_NORMALIZED_RECRUITMENT = sd(RECRUITMENT)
-  ) %>% 
-  as.data.table()
-
-Mean_of_Means <-
-  Recruitment_List %>% 
   group_by(
     COHORT,
     NORMALIZED_INTENSITY
   ) %>% 
   filter(
-    n() >= 2 #so we only look at intensities where there are at least 2 replicates
-  ) %>%
+    n() >= 25 #so we only look at intensities where there are at least 5 events
+  ) %>% 
   summarise(
-    SEM_NORMALIZED_RECRUITMENT = sem(NORMALIZED_RECRUITMENT),
-    SD_NORMALIZED_RECRUITMENT = sd(NORMALIZED_RECRUITMENT),
-    NORMALIZED_RECRUITMENT = mean(NORMALIZED_RECRUITMENT)
-  )
+    NORMALIZED_RECRUITMENT = mean(RECRUITMENT),
+    SEM_NORMALIZED_RECRUITMENT = sem(RECRUITMENT)
+  ) %>% 
+  as.data.table()
 
 #plot the percentage of TRAF6 recruitment over normalized Intensity
 ggplot(
-  data = Mean_of_Means
+  data = Recruitment_List
 )+
   geom_path(
     aes(
@@ -81,7 +64,7 @@ ggplot(
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers colocalizing \n with TRAF6 (% ± s.e.m.)"
+    y = "oligomers colocalizing \n with TRAF6 (% ± S.E.M.)"
   )+
   theme_classic(base_size = 9)+
   theme(
@@ -89,15 +72,15 @@ ggplot(
     axis.text = element_text(color = "black",
                              size = 7),
     legend.title = element_blank()
-  )
+    )
 
-setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 4")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
 
 ggsave(
-  "cl247_cl255_cl263_NORM-INT_PCT-TRAF6-REC_path.pdf",
+  "cl069_cl232_cl236_cl240_cl321_NORM-INT_PCT-TRAF6-REC_path.pdf",
   scale = 1,
-  units = "mm",
   family = "Helvetica",
-  height = 30,
-  width = 90
+  units = "mm",
+  height = 35,
+  width = 55
 )

@@ -1,6 +1,6 @@
 library(pacman)
 
-pacman::p_load(ggplot2, data.table, dplyr, ggfx, viridis, RColorBrewer, ggpubr, lemon, ggbreak, tidyfast, ggbeeswarm, R.utils, signal)
+pacman::p_load(ggplot2, data.table, dplyr, ggfx, viridis, RColorBrewer, ggpubr, lemon, ggbreak, tidyfast, ggbeeswarm, R.utils, signal, ggh4x)
 filter <- dplyr::filter
 
 #Set path of analyzed Images

@@ -180,11 +180,10 @@ geom_pwc(
     y = "% long lived recruitments per cell",
   )+
   scale_y_continuous(
-    #limits = c(0, 100),
     breaks = c(15, 30, 45, 60)
   )+
   scale_x_discrete(
-    labels = c(bquote(cMyD88^"1x"), bquote(cMyD88^"3x"), bquote(cMyD88^"5x"))
+    labels = c("1x", "3x", "5x")
   )+
   fill_palette(
     palette = color_violin
@@ -192,7 +191,6 @@ geom_pwc(
   theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
-    #strip.text = element_blank(),
     axis.text = element_text(color = "black",
                              size = 7),
     axis.title = element_text(color = "black",

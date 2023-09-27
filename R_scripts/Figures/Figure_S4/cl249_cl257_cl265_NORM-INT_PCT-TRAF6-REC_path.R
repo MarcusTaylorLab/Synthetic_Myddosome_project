@@ -53,9 +53,13 @@ ggplot(
     limits = c(0, 180),
     breaks = scales::breaks_width(20)
   )+
+  scale_y_continuous(
+    limits = c(0,100),
+    breaks = scales::breaks_width(20)
+  )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers \n colocalizing with TRAF6"
+    y = "% of TRAF6 \n pos. oligomers"
   )+
   theme_classic(base_size = 9)+
   theme(

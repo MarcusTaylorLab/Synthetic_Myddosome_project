@@ -20,7 +20,7 @@ Recruitment_List <-
     IMAGE
   ) %>% 
   filter(
-    n() >= 10 #so we only look at intensities where there are at least 5 events
+    n() >= 10 #so we only look at intensities where there are at least 10 events
   ) %>% 
   summarise(
     NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
@@ -81,7 +81,7 @@ ggplot(
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers colocalizing \n with TRAF6 (% ± s.e.m.)"
+    y = "% of TRAF6 \n pos. oligomers"
   )+
   theme_classic(base_size = 9)+
   theme(

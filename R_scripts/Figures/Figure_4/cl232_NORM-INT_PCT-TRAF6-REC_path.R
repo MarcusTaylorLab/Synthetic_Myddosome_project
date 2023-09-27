@@ -21,7 +21,7 @@ Recruitment_List <-
     IMAGE
   ) %>% 
   filter(
-    n() >= 3 #so we only look at intensities where there are at least 5 events
+    n() >= 10 #so we only look at intensities where there are at least 10 events
   ) %>% 
   summarise(
     NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
@@ -78,18 +78,18 @@ ggplot(
     palette = color_violin
   )+
   scale_x_continuous(
-    limits = c(0, 120),
+    limits = c(0, 100),
     breaks = scales::breaks_width(20)
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers colocalizing \n with TRAF6 (% ± s.e.m.)"
+    y = "% of TRAF6 \n pos. oligomers"
   )+
-  theme_classic(base_size = 7)+
+  theme_classic(base_size = 9)+
   theme(
     legend.position = "0",
     axis.text = element_text(color = "black",
-                             size = 6),
+                             size = 7),
     legend.title = element_blank()
   )
 
@@ -100,6 +100,6 @@ ggsave(
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 30,
-  width = 80
+  height = 33,
+  width = 70
 )

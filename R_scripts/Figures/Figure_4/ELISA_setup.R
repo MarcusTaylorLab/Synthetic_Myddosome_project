@@ -92,11 +92,3 @@ Plot_Fx <- function(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_te
       legend.text = element_text(color = "black")
     )
 }
-# cl232_cl255_cl257_ELISA -------------------------------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl232_cl255_cl257_ELISA.R", local = T)
-
-# cl247_cl255_cl263_ELISA -------------------------------------------------------------
-
-source("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 3/cl247_cl255_cl263_ELISA.R", local = T)
-

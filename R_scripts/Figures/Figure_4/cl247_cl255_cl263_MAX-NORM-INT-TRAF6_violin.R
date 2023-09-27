@@ -68,7 +68,7 @@ ggplot(
     breaks = scales::breaks_log(n = 10, base = 10)
   )+
   scale_x_discrete(
-    labels = c(bquote(cMyD88^"1x"), bquote(cMyD88^"3x"), bquote(cMyD88^"5x"))
+    labels = c("1x", "3x", "5x")
   )+
   labs(
     y = "max size of TRAF6 (log)"

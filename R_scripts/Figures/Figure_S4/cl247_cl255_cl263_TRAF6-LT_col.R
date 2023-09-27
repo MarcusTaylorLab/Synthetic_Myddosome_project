@@ -179,15 +179,15 @@ ggplot(
     y = 4.25,
     x = seq(10, 90, 20+(2/3)*10),
     label = c("<4", "4-8", "12-40", ">40"),
-    size = 2,
+    size = 4,
     color = c("grey90", "grey90", "grey10", "grey10")
   )+
   annotate(
     "text",
     y = 4.25,
-    x = -10,
+    x = -2,
     label = "TRAF6 LT (s)",
-    size = 2,
+    size = 3,
     hjust = 1
   )
 

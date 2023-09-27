@@ -99,7 +99,7 @@ ggplot(
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers  \n colocalizing with TRAF6"
+    y = "% of TRAF6 \n pos. oligomers"
   )+
   theme_classic(base_size = 9)+
   theme(

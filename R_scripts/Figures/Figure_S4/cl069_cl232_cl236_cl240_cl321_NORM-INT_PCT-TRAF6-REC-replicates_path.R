@@ -27,7 +27,7 @@ Recruitment_List <-
     IMAGE
   ) %>% 
   filter(
-    n() >= 10 #so we only look at intensities where there are at least 3 events
+    n() >= 10 #so we only look at intensities where there are at least 10 events
   ) %>% 
   summarise(
     NORMALIZED_RECRUITMENT = (sum(RECRUITMENT == 1)/n()),
@@ -109,13 +109,13 @@ ggplot(
     COHORT == "MyD88" ~ scale_x_continuous(breaks = c(0, 10), expand = c(0.5,0)),
     COHORT == "cMyD88" ~ scale_x_continuous(breaks = c(0, 50, 100, 150)),
     COHORT == "cMyD88^{TIR}" ~ scale_x_continuous(breaks = c(0, 15, 30), expand = c(0.1,0)),
-    COHORT == "cMyD88^{bDLD}" ~ scale_x_continuous(breaks = c(0, 50, 100, 150, 200, 250, 300, 350)),
-    COHORT == "cMyD88^{DHF91}" ~ scale_x_continuous(breaks = c(0, 15, 30), expand = c(0.1,0))
+    COHORT == "cMyD88^{bDLD}" ~ scale_x_continuous(breaks = c(0, 50, 100, 150, 200, 250, 300, 350), limits = c(0,350)),
+    COHORT == "cMyD88^{DHF91}" ~ scale_x_continuous(breaks = c(0, 25, 50, 75, 100))
   )
   )+
   labs(
     x = "Size of chimeric oligomer",
-    y = "oligomers  \n colocalizing with TRAF6"
+    y = "% of TRAF6 \n pos. oligomers"
   )+
   theme_classic(base_size = 9)+
   theme(

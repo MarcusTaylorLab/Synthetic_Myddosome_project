@@ -15,7 +15,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -163,7 +163,7 @@ ggplot(
     )+
   coord_cartesian(
     ylim = c(1,5),
-    xlim = c(0,100),
+    xlim = c(-3,100),
     clip = "off"
   )+
   annotate(
@@ -179,15 +179,16 @@ ggplot(
     y = 6.25,
     x = seq(10, 90, 20+(2/3)*10),
     label = c("<4", "4-8", "12-40", ">40"),
-    size = 2,
+    size = 4,
     color = c("grey90", "grey90", "grey10", "grey10")
   )+
   annotate(
     "text",
     y = 6.25,
-    x = -15,
-    label = "TRAF6 LT (s)",
-    size = 2
+    x = -2,
+    label = "TRAF6 Lifetime (s)",
+    size = 2.5,
+    hjust = 1
   )
 
 setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S2")
@@ -198,5 +199,5 @@ ggsave(
   units = "mm",
   family = "Helvetica",
   height = 50,
-  width = 88
+  width = 180
 )

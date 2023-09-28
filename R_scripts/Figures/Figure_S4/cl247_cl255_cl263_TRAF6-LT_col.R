@@ -63,6 +63,14 @@ Cell_Summary$CATEGORY_DWELL_TIME <- factor(
   )
 ))
 
+Cell_Summary$COHORT <- factor(
+  Cell_Summary$COHORT, levels = c(
+    "MyD88-GFP-synTRAF6-BD-5x TRAF6",
+    "MyD88-GFP-synTRAF6-BD-3x TRAF6",
+    "MyD88-GFP-synTRAF6-BD-1x TRAF6"
+  )
+  )
+
 LT_NO <- 
   Cell_Summary %>% 
   group_by(
@@ -151,7 +159,7 @@ ggplot(
     x = "% of total recruitments",
   )+
   scale_y_discrete(
-    labels = c(bquote(cMyD88^"1x"), bquote(cMyD88^"3x"), bquote(cMyD88^"5x"))
+    labels = c(bquote(cMyD88^"5x"), bquote(cMyD88^"3x"), bquote(cMyD88^"1x"))
   )+
   theme_classic(base_size = 9)+
   theme(
@@ -163,7 +171,7 @@ ggplot(
     )+
   coord_cartesian(
     ylim = c(1,3),
-    xlim = c(-6,100),
+    xlim = c(-3,100),
     clip = "off"
   )+
   annotate(
@@ -186,8 +194,8 @@ ggplot(
     "text",
     y = 4.25,
     x = -2,
-    label = "TRAF6 LT (s)",
-    size = 3,
+    label = "TRAF6 Lifetime (s)",
+    size = 2.5,
     hjust = 1
   )
 
@@ -199,5 +207,5 @@ ggsave(
   units = "mm",
   family = "Helvetica",
   height = 50,
-  width = 92
+  width = 180
 )

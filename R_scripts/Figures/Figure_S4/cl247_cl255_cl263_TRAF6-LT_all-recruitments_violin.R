@@ -176,10 +176,10 @@ ggplot(
   )+
   labs(
     y = "% recruitments per cell",
-    title = "TRAF6 LT (s)"
+    title = "TRAF6 Lifetime (s)"
   )+
   scale_x_discrete(
-    labels = c(bquote(cMyD88^"1x"), bquote(cMyD88^"3x"), bquote(cMyD88^"5x"))
+    labels = c("1x", "3x", "5x")
   )+
   facet_rep_wrap(
     ~CATEGORY_DWELL_TIME,
@@ -193,12 +193,11 @@ ggplot(
   theme(
     legend.position = "0",
     plot.margin = margin(l= 0.1, unit = "native"),
-    plot.title = element_text(hjust = -0.2, vjust = -7, size = 9),
+    plot.title = element_text(hjust = -0.2, vjust = -8, size = 9),
     #strip.text = element_blank(),
     axis.text.x = element_text(color = "black",
-                             size = 7,
-                             angle = 45,
-                             vjust = 0.5,),
+                             size = 7),
+    strip.text.x = element_text(size = 12),
     axis.title.x = element_blank(),
     strip.background = element_blank()
   )

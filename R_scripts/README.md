@@ -1,11 +1,11 @@
 # Structure of repository
 
 This folder contains R_scripts which are used to generate plots from the output of the image analysis pipeline. 
-The repository is made up of three main sections. 
+The repository is made up of four main sections. 
 
 - ```Figures```: These are the up-to-date scripts which are used to generate all R-plots for the different figures
 - ```Scripts_ELISA```: These scripts are used to generate tables with the correct format for further R analysis from the raw ELISA data
-- ```archived_scripts```: These scripts were previously used to generate plots for figures, but are currently not used anymore
+- ```archived_scripts```: These scripts were previously used to generate plots for figures, but are currently not used
 - ```tempate_scripts```: Some plots are being used multiple times with different cell lines for different figures. These scripts can be used as templates for future analysis.
 
 ## Detailed information on structure of ```Figures``` folder

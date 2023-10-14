@@ -118,7 +118,7 @@ color_pal <-
     "cMyD88"= "#117733",
     "cMyD88^{TIR}" = "#332288",
     "cMyD88^{bDLD}" = "#AA4499",
-    "cMyD88^{DHF91}" = "#882255"
+    "cMyD88^{DHF91}" = "#44AA99"
   )
 
 #Plot the data

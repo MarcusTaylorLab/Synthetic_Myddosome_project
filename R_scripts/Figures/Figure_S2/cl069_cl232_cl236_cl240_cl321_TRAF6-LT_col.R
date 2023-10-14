@@ -199,5 +199,5 @@ ggsave(
   units = "mm",
   family = "Helvetica",
   height = 50,
-  width = 180
+  width = 184
 )

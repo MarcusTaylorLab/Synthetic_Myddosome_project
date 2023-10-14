@@ -48,9 +48,9 @@ Table$COHORT <- factor(
 #set a color palette for the plots
 color_violin<-c(
   "MyD88-TRAF6-BD TRAF6" = "#117733", 
-  "MyD88 TRAF6" = "#44AA99",
+  "MyD88 TRAF6" = "#333333",
   "MyD88-TIR-TRAF6-BD TRAF6" = "#332288",
-  "MyD88-DHF91-TRAF6-BD TRAF6" = "#882255",
+  "MyD88-DHF91-TRAF6-BD TRAF6" = "#44AA99",
   "BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6" = "#AA4499"
 )
 

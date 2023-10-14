@@ -140,18 +140,27 @@ ggplot(
   data = Mean_Cell,
   aes(
     x = COHORT,
-    y = PCT_RECRUITMENT*100,
-    fill = COHORT,
-    grop = CATEGORY_DWELL_TIME
-    )
+    y = PCT_RECRUITMENT*100)
 )+
   geom_violin(
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      fill = COHORT,
+      group = COHORT
+    ),
     alpha = 0.7,
     scale = "width",
     linewidth = 0.2,
     color = "black"
   )+
   geom_boxplot(
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      fill = COHORT,
+      group = COHORT
+    ),
     width = .2,
     outlier.shape = NA,
     fill = NA,
@@ -160,23 +169,25 @@ ggplot(
   )+
   geom_point(
     data = Mean_Replicates,
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      group = COHORT
+    ),
     position = position_jitter(height=0.3, width=0),
     size = 0.75
   )+
   geom_pwc(
     data = Mean_Replicates,
-    method = "wilcox_test",
-    label = "italic(p)= {p}",
-    tip.length = 0,
-    label.size = 2,
-    group.by = "legend.var",
-    ref.group = 1,
-    #vjust = 0.5, 
-    hide.ns = FALSE
+    method = "wilcox.test",
+    symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*", "ns")),
+    label = "p.signif",
+    tip.length = 0.01,
+    vjust = 0.5,
+    hide.ns = "p"
   )+
   labs(
-    y = "% recruitments per cell",
-    title = "TRAF6 Lifetime (s)"
+    y = "% recruitments per cell"
   )+
   scale_x_discrete(
     labels = c("1x", "3x", "5x")
@@ -189,10 +200,9 @@ ggplot(
     palette = color_violin
   )+
   theme_classic(base_size = 9
-                )+
+  )+
   theme(
     legend.position = "0",
-    plot.margin = margin(l= 0.1, unit = "native"),
     plot.title = element_text(hjust = -0.2, vjust = -8, size = 9),
     #strip.text = element_blank(),
     axis.text.x = element_text(color = "black",

@@ -8,7 +8,6 @@ TablePaths <- c(
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221129 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 001/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221207 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 002/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20221207 4nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 006/Essential.csv.gz",
-  #"/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20230309 1.5nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 002/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-1x TRAF6/20230317 1.5nM_cl247_TRAF6_MyD88-GFP-synTRAF6-BD-1x 001/Essential.csv.gz",
   
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-GFP-synTRAF6-BD-3x TRAF6/20221123 4nM_cl255_TRAF6_MyD88-GFP-synTRAF6-BD-3x 001/Essential.csv.gz",

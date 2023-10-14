@@ -77,6 +77,9 @@ ggplot(
     trans = "log10",
     breaks = scales::breaks_log(n=10,base=10)
   )+
+  scale_y_discrete(
+    labels = c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
+  )+
   fill_palette(
     palette = color_violin
   )+
@@ -84,29 +87,18 @@ ggplot(
   theme(
     legend.position = "0",
     legend.title = element_blank(),
-    axis.text.y = element_blank(),
     axis.text.x = element_text(color = "black",
                                size = 6),
     axis.title.y = element_blank()
   )
-# +
-#   geom_pwc(
-#     data = Replicates,
-#     method = "t.test",
-#     #comparisons = my_comparison,
-#     hide.ns = TRUE,
-#     size = 5,
-#     tip.length = 0,
-#     label = "p.signif"
-#   )
 
-setwd("//data-tay/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure 2")
+setwd("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/Mock Figures/Figure S2")
 
 ggsave(
   "cl069_cl232_cl236_cl240_cl321__MAX-NORM-INT-MYD88_violin.pdf",
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 35,
-  width = 55
+  height = 40,
+  width = 90
 )

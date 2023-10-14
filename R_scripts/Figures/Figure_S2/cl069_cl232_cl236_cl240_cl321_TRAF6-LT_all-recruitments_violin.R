@@ -14,7 +14,7 @@ Cell_Summary<-
     .by_group = TRUE #We order every group (ie every Track) by frames
   ) %>% 
   mutate(
-    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1 #threshold at which recruitment is counted
+    COLOCALIZATION = COMPLEMENTARY_NORMALIZED_INTENSITY_1 >= 1.5 #threshold at which recruitment is counted
     #Here I create a new column (with mutate) that will have the value 1 (for TRUE), 
     #if the condition above is satisfied or 0 (for FALSE) if the condition is not satisfied
   ) %>% 
@@ -157,18 +157,27 @@ ggplot(
   data = Mean_Cell,
   aes(
     x = COHORT,
-    y = PCT_RECRUITMENT*100,
-    fill = COHORT,
-    grop = CATEGORY_DWELL_TIME
-    )
+    y = PCT_RECRUITMENT*100)
 )+
   geom_violin(
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      fill = COHORT,
+      group = COHORT
+    ),
     alpha = 0.7,
     scale = "width",
     linewidth = 0.2,
     color = "black"
   )+
   geom_boxplot(
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      fill = COHORT,
+      group = COHORT
+    ),
     width = .2,
     outlier.shape = NA,
     fill = NA,
@@ -177,23 +186,38 @@ ggplot(
   )+
   geom_point(
     data = Mean_Replicates,
+    aes(
+      x = COHORT,
+      y = PCT_RECRUITMENT*100,
+      group = COHORT
+    ),
     position = position_jitter(height=0.3, width=0),
     size = 0.75
   )+
+  # stat_compare_means(
+  #   data = Mean_Replicates,
+  #   comparisons = my_comparison,
+  #   hide.ns = TRUE,
+  #   label = "p.signif",
+  #   tip.length = 0
+  # )+
   geom_pwc(
     data = Mean_Replicates,
-    method = "t.test",
+    method = "wilcox.test",
+    symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*", "ns")),
     label = "p.signif",
-    tip.length = 0,
-    vjust = 0.5, 
-    hide.ns = TRUE
+    tip.length = 0.01,
+    vjust = 0.5,
+    hide.ns = "p"
   )+
   labs(
-    y = "% recruitments per cell",
-    title = "TRAF6 LT (s)"
-  )+
+    y = "% recruitments per cell"
+    )+
   scale_x_discrete(
     labels = c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
+  )+
+  scale_y_continuous(
+    breaks = c(0,25,50,75,100)
   )+
   facet_rep_wrap(
     ~CATEGORY_DWELL_TIME,
@@ -206,7 +230,6 @@ ggplot(
                 )+
   theme(
     legend.position = "0",
-    plot.margin = margin(l= 0.1, unit = "native"),
     plot.title = element_text(hjust = -0.2, vjust = -7, size = 9),
     #strip.text = element_blank(),
     axis.text.x = element_text(color = "black",

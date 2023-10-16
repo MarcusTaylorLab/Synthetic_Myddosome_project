@@ -6,7 +6,6 @@ filter <- dplyr::filter
 #Set path of analyzed Images
 TablePaths <- c(
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88 TRAF6/20230405 1.5nM_cl069_TRAF6_MyD88 001/Essential.csv.gz",
-  #"/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88 TRAF6/20230405 1.5nM_cl069_TRAF6_MyD88 006/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88 TRAF6/20230413 2.5nM_cl069_TRAF6_MyD88 001/Essential.csv.gz",
   
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-TRAF6-BD TRAF6/20220516 1.5nM_cl232_TRAF6_MyD88-TRAF6-BD-GFP 001/Essential.csv.gz",
@@ -21,11 +20,10 @@ TablePaths <- c(
   
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-DHF91-TRAF6-BD TRAF6/20220615 1.5nM_cl236_TRAF6_MyD88-DHF91-TRAF6-BD-GFP 001/Essential.csv.gz",
   "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-DHF91-TRAF6-BD TRAF6/20221207 4nM_cl236_TRAF6_MyD88-DHF91-TRAF6-BD-GFP 001/Essential.csv.gz",
-  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-DHF91-TRAF6-BD TRAF6/20230405 1.5nM_cl236_TRAF6_MyD88-DHF91-TRAF6-BD-GFP 003/Essential.csv.gz",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/MyD88-DHF91-TRAF6-BD TRAF6/20230413 2.5nM_cl236_TRAF6_MyD88-DHF91-TRAF6-BD-GFP 001/Essential.csv.gz",
   
-  "/Volumes/TAYLOR-LAB/Finn/new_pipeline/pending_processing/20230602_batch/Output/BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6/20230602 6nM_cl321-BDLD57H_TRAF6_MyD88_002/Essential.csv.gz",
-  "/Volumes/TAYLOR-LAB/Finn/new_pipeline/pending_processing/20230616_batch/Output/BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6/20230616 3nM_cl321-BDLD57H_TRAF6_MyD88 001/Essential.csv.gz",
-  "/Volumes/TAYLOR-LAB/Finn/new_pipeline/pending_processing/20230623_batch/Output/BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6/20230623 3nM_cl321-BDLD57H_TRAF6_MyD88 002/Essential.csv.gz"
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6/20230616 3nM_cl321-BDLD57H_TRAF6_MyD88 001/Essential.csv.gz",
+  "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/data_analysis_good_images/BDLD_57H-MyD88-TIR-TRAF6-BD-GFP TRAF6/20230623 3nM_cl321-BDLD57H_TRAF6_MyD88 002/Essential.csv.gz"
 )
 
 Table <- lapply(TablePaths, 

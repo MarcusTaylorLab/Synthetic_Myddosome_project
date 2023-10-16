@@ -68,7 +68,7 @@ ggplot(
   )+
   labs(
     y = "Cell lines",
-    x = "Max size of chimeric oligomer"
+    x = "Max size of chimeric oligomer (log-scale)"
   )+
   coord_cartesian(
     xlim = c(1,NA)
@@ -78,7 +78,7 @@ ggplot(
     breaks = scales::breaks_log(n=10,base=10)
   )+
   scale_y_discrete(
-    labels = c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
+    labels = rev(c("WT", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^bDLD), bquote(cMyD88^DHF91)))
   )+
   fill_palette(
     palette = color_violin

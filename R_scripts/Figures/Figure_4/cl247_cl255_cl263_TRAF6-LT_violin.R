@@ -167,15 +167,15 @@ ggplot(
     position = position_jitter(height=0.3, width=0),
     size = 0.75
   )+
-geom_pwc(
-  data = Mean_Replicates,
-  method = "wilcox_test",
-  label = "italic(p)= {p}",
-  tip.length = 0,
-  label.size = 2,
-  #vjust = 0.5, 
-  hide.ns = FALSE
-)+
+  geom_pwc(
+    data = Mean_Replicates,
+    method = "wilcox.test",
+    symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*", "ns")),
+    label = "p.signif",
+    tip.length = 0.01,
+    vjust = 0.5,
+    hide.ns = "p"
+  )+
   labs(
     y = "% long lived recruitments per cell",
   )+

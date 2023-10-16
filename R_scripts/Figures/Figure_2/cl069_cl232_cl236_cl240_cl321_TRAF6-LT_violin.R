@@ -95,15 +95,7 @@ Mean_Cell <-
     sum(N_CATEGORY_DWELL_TIME) > 4 #more than 4 recruitment events per cell
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1],
-    SHAPE = fcase(
-      DATE == "20230405", 21,
-      DATE == "20230413", 22,
-      DATE == "20220516", 23,
-      DATE == "20220610", 24,
-      DATE == "20220615", 25
-    )
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 
@@ -126,15 +118,7 @@ Mean_Replicates <-
     IMAGE
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1],
-    SHAPE = fcase(
-      DATE == "20230405", 21,
-      DATE == "20230413", 22,
-      DATE == "20220516", 23,
-      DATE == "20220610", 24,
-      DATE == "20220615", 25
-    )
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 
@@ -183,29 +167,17 @@ ggplot(
     position = position_jitter(height=0.3, width=0),
     size = 0.75
   )+
-  # geom_errorbar(
-  #   data = Mean_Total,
-  #   aes(
-  #     ymin = (PCT_RECRUITMENT-SEM_PCT_RECRUITMENT)*100,
-  #     ymax = (PCT_RECRUITMENT+SEM_PCT_RECRUITMENT)*100
-  #   ),
-  #   position = position_dodge(width = 1),
-  #   width = 0.2,
-  #   color = "black",
-  #   size = 1
-  # )+
   geom_pwc(
     data = Mean_Replicates,
-    method = "t.test",
+    method = "wilcox.test",
+    symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*", "ns")),
     label = "p.signif",
-    comparisons = my_comparison,
-    tip.length = 0,
-    vjust = 0.5, 
-    hide.ns = TRUE
+    tip.length = 0.01,
+    vjust = 0.5,
+    hide.ns = "p"
   )+
   labs(
     y = "% long lived \n recruitments per cell",
-    #title = "Lifetime of TRAF6 (s)"
   )+
   scale_y_continuous(
     #limits = c(0, 120),

@@ -97,15 +97,7 @@ Mean_Cell <-
     sum(N_CATEGORY_DWELL_TIME) > 4 #more than 4 recruitment events per cell
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1],
-    SHAPE = fcase(
-      DATE == "20230405", 21,
-      DATE == "20230413", 22,
-      DATE == "20220516", 23,
-      DATE == "20220610", 24,
-      DATE == "20220615", 25
-    )
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 
@@ -128,15 +120,7 @@ Mean_Replicates <-
     IMAGE
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1],
-    SHAPE = fcase(
-      DATE == "20230405", 21,
-      DATE == "20230413", 22,
-      DATE == "20220516", 23,
-      DATE == "20220610", 24,
-      DATE == "20220615", 25
-    )
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 
@@ -194,13 +178,6 @@ ggplot(
     position = position_jitter(height=0.3, width=0),
     size = 0.75
   )+
-  # stat_compare_means(
-  #   data = Mean_Replicates,
-  #   comparisons = my_comparison,
-  #   hide.ns = TRUE,
-  #   label = "p.signif",
-  #   tip.length = 0
-  # )+
   geom_pwc(
     data = Mean_Replicates,
     method = "wilcox.test",

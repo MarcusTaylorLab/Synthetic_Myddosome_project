@@ -94,8 +94,7 @@ Mean_Cell <-
     sum(N_CATEGORY_DWELL_TIME) > 20 #more than 20 recruitment events per cell
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1]
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 
@@ -118,8 +117,7 @@ Mean_Replicates <-
     IMAGE
   ) %>% 
   mutate(
-    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME),
-    DATE = strsplit(IMAGE, " ")[[1]][1]
+    PCT_RECRUITMENT = N_CATEGORY_DWELL_TIME/sum(N_CATEGORY_DWELL_TIME)
   ) %>%
   as.data.table()
 

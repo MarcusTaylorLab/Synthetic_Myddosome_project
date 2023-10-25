@@ -177,7 +177,7 @@ ggplot(
     hide.ns = "p"
   )+
   labs(
-    y = "% long lived \n recruitments per cell",
+    y = "% per cell",
   )+
   scale_y_continuous(
     #limits = c(0, 120),
@@ -207,6 +207,6 @@ ggsave(
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 35,
-  width = 86
+  height = 42,
+  width = 88
 )

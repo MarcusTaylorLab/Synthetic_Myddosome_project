@@ -1,4 +1,3 @@
-# #Figure 2: DHF91-TIR-T6BM, WT, 3x KO-------------------------------------------------------------------------
 WT_data <-
   All_days_data %>% 
   filter(
@@ -140,10 +139,11 @@ ggplot(
     values = c("white", "grey50")
   )+
   labs(
-    y = "relative IL-2 secretion"
+    y = "IL-2 release (relative)"
   )+
   guides(
-    color = "none"
+    color = "none",
+    fill = guide_legend(nrow = 2)
   )+
   theme_classic(base_size = 8) +
   theme(
@@ -155,10 +155,10 @@ ggplot(
     axis.title.x = element_blank(),
     axis.text.y = element_text(size = 8),
     axis.title.y = element_text(size = 9),
-    legend.position = "top",
+    legend.position = c(0.9,0.8),
     legend.title = element_blank(),
     legend.text = element_text(size = 9, color = "black"),
-    legend.key.size = unit(2, "mm"),
+    legend.key.size = unit(3, "mm"),
     #legend.key = element_rect(fill = "transparent")  # Set the legend box background to transparent
   )
 

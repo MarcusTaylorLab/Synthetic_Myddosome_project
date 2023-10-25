@@ -1,3 +1,30 @@
+#read the tables
+Table_path <- 
+  c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa/Output/ELISA_Table.csv",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa/Output/ELISA_Table.csv",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa/Output/ELISA_Table.csv",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20230621_ELISA/Output/ELISA_Table.csv"
+  )
+
+All_days_data <- data.frame()
+
+for (Table in Table_path){
+  
+  All_plates_data <- fread(Table)
+  All_plates_data$Date <- (strsplit(strsplit(Table, "/")[[1]][7], "_"))[[1]][1]
+  All_days_data <- rbind(All_days_data, All_plates_data)
+  
+  rm(
+    All_plates_data
+  )
+  
+}
+
+All_days_data$Stimulation_Condition <- factor(All_days_data$Stimulation_Condition, levels=c("Unstimulated", "Stimulated"))
+
+#Standard error of the mean function
+sem <- function(x) sd(x)/sqrt(length(x))
+
 All_days_data <-
   All_days_data %>% 
   group_by(
@@ -150,24 +177,25 @@ ggplot(
     data = DHF91_TIR_T6BM_test,
     method = "wilcox.test",
     label = "p.signif",
-    hide.ns = TRUE
+    hide.ns = TRUE,
+    vjust = 1.5
     )+
   scale_y_continuous(
     breaks = seq(from = 0, to = 1, by = 0.2)
   )+
   scale_x_discrete(
     labels = c("3xKO", "cMyD88", bquote(cMyD88^bDLD), bquote(cMyD88^DHF91))
-    
   )+
   scale_fill_manual(
     labels = c("- IL-1", "+ IL-1"),
     values = c("white", "grey50")
   )+
   labs(
-    y = "relative IL-2 secretion"
+    y = "IL-2 release (relative)"
   )+
   guides(
-    color = "none"
+    color = "none",
+    fill = guide_legend(nrow = 2)
   )+
   theme_classic(base_size = 8) +
   theme(
@@ -179,10 +207,10 @@ ggplot(
     axis.title.x = element_blank(),
     axis.text.y = element_text(size = 8),
     axis.title.y = element_text(size = 9),
-    legend.position = "top",
+    legend.position = c(0.15,0.8),
     legend.title = element_blank(),
     legend.text = element_text(size = 9, color = "black"),
-    legend.key.size = unit(2, "mm"),
+    legend.key.size = unit(3, "mm"),
     #legend.key = element_rect(fill = "transparent")  # Set the legend box background to transparent
     )
 
@@ -194,6 +222,6 @@ ggsave(
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 35,
+  height = 45,
   width = 86
 )

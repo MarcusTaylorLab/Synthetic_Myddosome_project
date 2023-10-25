@@ -1,4 +1,3 @@
-# #Figure 3A: WT, 3xKO, MyD88-GFP-synTRAF6-BD-3x, MyD88-GFP-synTRAF6-BD-3xA--------------------------------------------------------------------------
 Dose_data <- 
   All_days_data %>% 
   filter(

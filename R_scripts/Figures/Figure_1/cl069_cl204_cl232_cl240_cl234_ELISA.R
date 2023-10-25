@@ -1,31 +1,28 @@
-# All_days_data <-
-#   All_days_data %>% 
-#   group_by(
-#     Sample_Day,
-#     Date
-#   ) %>% 
-#   mutate(REL_IL2 = 
-#            case_when(
-#              Date == "20220609" ~ Values_Measured / Values_Measured[Cohort == "WT" & Stimulation_Condition == "Stimulated"],
-#              Cohort != "MyD88-/-/ IRAK4-/-/\\n IRAK1-/-" ~ Values_Measured / Values_Measured[Cohort == "MyD88-GFP/ TRAF6-mScarlet" & Stimulation_Condition == "Stimulated"]))
-# 
-# Factor <- 
-#   All_days_data %>% 
-#   ungroup() %>% 
-#   filter(
-#     Cohort == "MyD88-GFP/ TRAF6-mScarlet",
-#     Stimulation_Condition == "Stimulated"
-#   ) %>% 
-#   summarise(
-#     REL_IL2 = mean(REL_IL2)
-#   ) %>% 
-#   as.numeric()
-# 
-# All_days_data <-
-#   All_days_data %>% 
-#   mutate(
-#     Relative_Intensity = REL_IL2*(1/Factor)
-#   )
+#read the tables
+Table_path <- 
+  c("/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220609_Elisa/Output/ELISA_Table.csv",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220623_Elisa/Output/ELISA_Table.csv",
+    "/Volumes/TAYLOR-LAB/Synthetic Myddosome Paper/ELISA data/ELISA analysis in R/20220701_Elisa/Output/ELISA_Table.csv"
+  )
+
+All_days_data <- data.frame()
+
+for (Table in Table_path){
+  
+  All_plates_data <- fread(Table)
+  All_plates_data$Date <- (strsplit(strsplit(Table, "/")[[1]][7], "_"))[[1]][1]
+  All_days_data <- rbind(All_days_data, All_plates_data)
+  
+  rm(
+    All_plates_data
+  )
+  
+}
+
+All_days_data$Stimulation_Condition <- factor(All_days_data$Stimulation_Condition, levels=c("Unstimulated", "Stimulated"))
+
+#Standard error of the mean function
+sem <- function(x) sd(x)/sqrt(length(x))
 
 chimeric_MyD88 <- 
   All_days_data %>% 
@@ -39,7 +36,6 @@ chimeric_MyD88 <-
   mutate(
     Relative_Intensity = Values_Measured / Values_Measured[Cohort == "MyD88-GFP/ TRAF6-mScarlet" & Stimulation_Condition == "Stimulated"])
 
-# #Figure 1:-------------------------------------------------------------------------
 chimeric_MyD88_data <- 
   chimeric_MyD88 %>% 
   filter(
@@ -129,41 +125,6 @@ chimeric_MyD88_stats <-
   ) %>% 
   as.data.table()
 
-# chimeric_MyD88_test <-
-#   chimeric_MyD88_data %>% 
-#   mutate(
-#     IL2_concentration_Dilution_Factor_mean = IL2_concentration_Dilution_Factor
-#   ) %>% 
-#   as.data.table()
-# 
-# chimeric_MyD88_plot <- 
-#   chimeric_MyD88_data %>% 
-#   group_by(
-#     Cohort,
-#     Stimulation_Condition,
-#     Sample_Day
-#   ) %>% 
-#   summarise(
-#     IL2_concentration_Dilution_Factor_mean = mean(IL2_concentration_Dilution_Factor),
-#     IL2_concentration_Dilution_Factor_median = median(IL2_concentration_Dilution_Factor)
-#   ) %>% 
-#   as.data.table()
-# 
-# chimeric_MyD88_stats <-
-#   chimeric_MyD88_data %>% 
-#   group_by(
-#     Cohort,
-#     Stimulation_Condition
-#   ) %>% 
-#   summarise(
-#     IL2_concentration_Dilution_Factor_mean = mean(IL2_concentration_Dilution_Factor),
-#     IL2_concentration_Dilution_Factor_median = median(IL2_concentration_Dilution_Factor),
-#     IL2_concentration_Dilution_Factor_sd = sd(IL2_concentration_Dilution_Factor)
-#   ) %>% 
-#   as.data.table()
-# 
-# Plot_Fx(chimeric_MyD88_plot, chimeric_MyD88_stats, chimeric_MyD88_test)
-
 color_elisa <- c("Unstimulated" = "white",
                  "Stimulated" = "grey")
 
@@ -204,10 +165,11 @@ ggplot(
     data = chimeric_MyD88_test,
     method = "wilcox.test",
     label = "p.signif",
-    hide.ns = TRUE
+    hide.ns = TRUE,
+    vjust = 0.9
   )+
   scale_y_continuous(
-    breaks = seq(from = 0, to = 1, by = 0.2)
+    breaks = seq(from = 0, to = 1, by = 0.5)
   )+
   scale_x_discrete(
     labels = c("WT", "3xKO", "cMyD88", bquote(cMyD88^TIR), bquote(cMyD88^"3xA"))
@@ -217,10 +179,11 @@ ggplot(
     values = c("white", "grey50")
   )+
   labs(
-    y = "relative IL-2 secretion"
+    y = "IL-2 release (relative)"
   )+
   guides(
-    color = "none"
+    color = "none",
+    fill = guide_legend(nrow = 2)
   )+
   theme_classic(base_size = 8) +
   theme(
@@ -232,10 +195,10 @@ ggplot(
     axis.title.x = element_blank(),
     axis.text.y = element_text(size = 8),
     axis.title.y = element_text(size = 9),
-    legend.position = "top",
+    legend.position = c(0.9,0.8),
     legend.title = element_blank(),
     legend.text = element_text(size = 9, color = "black"),
-    legend.key.size = unit(2, "mm"),
+    legend.key.size = unit(3, "mm"),
     #legend.key = element_rect(fill = "transparent")  # Set the legend box background to transparent
   )
 
@@ -246,6 +209,7 @@ ggsave(
   plot = last_plot(),
   scale = 1,
   units = "mm",
-  height = 50,
-  width = 80
+  family = "Helvetica",
+  height = 45,
+  width = 88
 )

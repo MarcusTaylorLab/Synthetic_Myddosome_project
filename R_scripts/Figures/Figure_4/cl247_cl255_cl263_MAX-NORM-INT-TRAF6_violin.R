@@ -93,6 +93,6 @@ ggsave(
   scale = 1,
   units = "mm",
   family = "Helvetica",
-  height = 60,
+  height = 50,
   width = 46
 )
